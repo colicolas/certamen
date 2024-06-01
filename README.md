@@ -1,2 +1,0 @@
-# certamen
-discite ludendo :)
