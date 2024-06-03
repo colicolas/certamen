@@ -1,12 +1,11 @@
+
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "@/lib/firebase";
 import { verifyPassword } from "@/lib/auth";
 
-// Define authentication options for NextAuth
 const authOptions = {
-  //adapter: FirestoreAdapter(db),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -30,7 +29,7 @@ const authOptions = {
           throw new Error("Incorrect password");
         }
 
-        return { email: user.email, name: user.name };
+        return { email: user.email, name: user.name, id: user.id, level: user.level, studyPreferences: user.studyPreferences };
       },
     }),
   ],
@@ -39,14 +38,22 @@ const authOptions = {
     error: "/auth/error",
   },
   callbacks: {
-    async session({ session, user }) {
-      session.user.id = user.id;
-      session.user.level = user.level;
-      session.user.studyPreferences = user.studyPreferences;
+    async session({ session, token }) {
+      session.user.id = token.id;
+      session.user.level = token.level;
+      session.user.studyPreferences = token.studyPreferences;
       return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.level = user.level;
+        token.studyPreferences = user.studyPreferences;
+      }
+      return token;
     },
   },
 };
 
-export const GET = async (req, res) => NextAuth(req, res, authOptions); // Correctly handle GET requests
-export const POST = async (req, res) => NextAuth(req, res, authOptions); // Correctly handle POST requests
+export const GET = async (req, res) => NextAuth(req, res, authOptions);
+export const POST = async (req, res) => NextAuth(req, res, authOptions);

@@ -12,8 +12,8 @@ const HomePage: React.FC = () => {
       </Head>
       <div className="min-h-screen bg-beige-300 flex flex-col items-center">
         <nav className="w-full flex justify-end p-6 space-x-4">
-          <LightButton text="Log In" link="/auth/signin" style="bg-beige"/>
-          <DarkButton text="Sign Up" link="/auth/register" style="ml-4"/>
+          <LightButton text="Log In" link="/auth/signin"/>
+          <DarkButton text="Sign Up" link="/auth/register" color="gray"/>
         </nav>
         <div className="mt-24 text-center">
           <h1 className="text-5xl font-bold mb-4">certamen.</h1>
@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
             discite ludendo :) 
           </p>
           <div className="flex space-x-4 justify-center">
-            <DarkButton text="Study" link="/study" />
+            <DarkButton text="Study" link="/study" color="gray"/>
             <LightButton text="Play" link="/play" />
           </div>
         </div>

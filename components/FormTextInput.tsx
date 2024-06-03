@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface InputProps {
-  label: string;
+  label?: string;
   type: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -11,9 +11,9 @@ interface InputProps {
 
 const Input: React.FC<InputProps> = ({ label, type, value, onChange, id, required=false }) => (
   <div className="mb-4">
-    <label htmlFor={id} className="block text-gray-700 text-xs font-bold mb-2 uppercase">
+    {!(label == null) && <label htmlFor={id} className="block text-gray-700 text-xs font-bold mb-2 uppercase">
       {label}
-    </label>
+    </label>}
     <input
       type={type}
       id={id}
