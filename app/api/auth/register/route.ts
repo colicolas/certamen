@@ -1,25 +1,47 @@
 import { NextResponse } from 'next/server';
-import { hashPassword } from '../../../../lib/auth';
-import { db } from '../../../../lib/firebase';
+import { verifyGoogleToken, hashPassword } from '@/lib/auth';
+import { db } from '@/lib/firebase';
 
 export async function POST(req) {
   const body = await req.json();
-  const { email, password, name, level, studyPreferences } = body;
+  const { email, password, name, division, specialties, team, bio, idToken } = body;
+
+  if (idToken) {
+    const decodedToken = await verifyGoogleToken(idToken);
+    if (!decodedToken) {
+      return NextResponse.json({ message: 'Invalid Google token' }, { status: 400 });
+    }
+  }
 
   const userRef = await db.collection('users').where('email', '==', email).get();
   if (!userRef.empty) {
-    return NextResponse.json({ message: "User already exists" }, { status: 422 });
+    return NextResponse.json({ message: "Email already in use" }, { status: 422 });
   }
 
-  const hashedPassword = await hashPassword(password);
+  const usernameRef = await db.collection('users').where('name', '==', name).get();
+  if (!usernameRef.empty) {
+    return NextResponse.json({ message: "Username already exists" }, { status: 422 });
+  }
 
-  await db.collection('users').add({
+  let hashedPassword = password;
+  if (!idToken && password) {
+    hashedPassword = await hashPassword(password);
+  }
+
+  const userData = {
     email,
-    password: hashedPassword,
     name,
-    level,
-    studyPreferences,
-  });
+    division,
+    specialties,
+    team,
+    bio,
+  };
+
+  if (!idToken) {
+    userData.password = hashedPassword;
+  }
+
+  await db.collection('users').add(userData);
 
   return NextResponse.json({ message: "User created" }, { status: 201 });
 }

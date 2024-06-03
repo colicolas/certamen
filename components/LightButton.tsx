@@ -9,7 +9,7 @@ type ButtonProps = {
 
 const LightButton: React.FC<ButtonProps> = ({ text, link, style }) => {
   return (
-    <Link className="border border-gray-800 text-grey-800 bg-beige py-2 px-4 rounded transition duration-300 hover:bg-opacity-35 ${style}" href={link} passHref>
+    <Link className="border border-gray-800 text-grey-800 bg-beige-300 py-2 px-4 rounded transition duration-300 hover:bg-beige-500 ${style}" href={link} passHref>
         {text}
     </Link>
   );

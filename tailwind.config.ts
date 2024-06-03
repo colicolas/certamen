@@ -14,7 +14,17 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        beige: '#e0ddda', // Adding the pale beige color
+        beige: {
+          100: '#ffffff',
+          200: '#f3f2f1',
+          300: '#e8e6e3',
+          400: '#e0ddda',
+          500: '#dcd9d5',	
+          600: '#d1ccc7',	
+          700: '#c5bfba',
+          800: '#b9b3ac',
+          900: '#aea69e',
+        },
       },
     },
   },

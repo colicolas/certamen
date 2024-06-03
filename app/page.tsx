@@ -10,7 +10,7 @@ const HomePage: React.FC = () => {
       <Head>
         <title> certamen. </title>
       </Head>
-      <div className="min-h-screen bg-beige flex flex-col items-center">
+      <div className="min-h-screen bg-beige-300 flex flex-col items-center">
         <nav className="w-full flex justify-end p-6 space-x-4">
           <LightButton text="Log In" link="/auth/signin" style="bg-beige"/>
           <DarkButton text="Sign Up" link="/auth/register" style="ml-4"/>
