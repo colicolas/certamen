@@ -1,8 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-//import { FirebaseAdapter } from "@next-auth/firebase-adapter";
-import { FirestoreAdapter } from "@next-auth/firebase-adapter";
 import { db } from "../../../../lib/firebase";
 import { verifyPassword } from "../../../../lib/auth";
 
