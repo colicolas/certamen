@@ -11,6 +11,8 @@ export default function Register() {
   const [name, setName] = useState("");
   const [division, setDivision] = useState("");
   const [specialties, setSpecialties] = useState<string[]>([]);
+  const [skill, setSkill] = useState<int[]>([0, 0, 0, 0, 0]);
+  const [coins, setCoins] = useState(0);
   const [team, setTeam] = useState<string[]>([]);
   const [bio, setBio] = useState("none yet!");
   const [error, setError] = useState("");
@@ -20,6 +22,11 @@ export default function Register() {
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
+  };
+
+  const validateUsername = (username: string) => {
+    const re = /^[a-zA-Z0-9.\-_!?]+$/;
+    return re.test(username) && username.length >= 3;
   };
 
   const addSpecialty = (specialty: string) => {
@@ -38,6 +45,10 @@ export default function Register() {
       setError("Invalid email address");
       return;
     }
+    if (!validateUsername(name)) {
+      setError("Username can only contain letters, numbers, and the characters '.', '-', '_', '!', and '?' and must be at least 3 characters long");
+      return;
+    }
     if (password.length < 6 && !googleSignedIn) {
       setError("Password must be at least 6 characters long");
       return;
@@ -52,6 +63,7 @@ export default function Register() {
         name,
         division,
         specialties,
+        skill,
         team,
         bio,
         idToken: googleSignedIn ? idToken : undefined,
@@ -106,11 +118,28 @@ export default function Register() {
         {error && <div className="mb-4 text-red-500">{error}</div>}
         <form onSubmit={registerUser}>
           {!googleSignedIn && (
-            <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} id="email" />
+            <div className="mb-4">
+              <label htmlFor="email" className="block text-gray-700 text-xs font-bold mb-2 uppercase">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} id="email" required />
+            </div>
           )}
-          <Input label="Username" type="text" value={name} onChange={(e) => setName(e.target.value)} id="name" />
           {!googleSignedIn && (
-            <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} id="password" />
+            <div className="mb-4">
+              <label htmlFor="name" className="block text-gray-700 text-xs font-bold mb-2 uppercase">
+                Username <span className="text-red-500">*</span>
+              </label>
+              <Input type="text" value={name} onChange={(e) => setName(e.target.value)} id="name" required />
+            </div>
+          )}
+          {!googleSignedIn && (
+            <div className="mb-4">
+              <label htmlFor="password" className="block text-gray-700 text-xs font-bold mb-2 uppercase">
+                Password <span className="text-red-500">*</span>
+              </label>
+              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} id="password" required />
+            </div>
           )}
           <div className="mb-4">
             <label htmlFor="division" className="block text-gray-700 text-xs font-bold mb-2 uppercase">Certamen Division</label> {/* Smaller and capitalized */}
