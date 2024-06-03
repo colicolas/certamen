@@ -13,6 +13,10 @@ export default function Register() {
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [skill, setSkill] = useState<int[]>([0, 0, 0, 0, 0]);
   const [coins, setCoins] = useState(0);
+  const [level, setLevel] = useState(1);
+  const [xp, setXp] = useState(0);
+  const [lessons, setLessons] = useState<int[]>([]);
+  const [characters, setCharacters] = useState<string[]>([]);
   const [team, setTeam] = useState<string[]>([]);
   const [bio, setBio] = useState("none yet!");
   const [error, setError] = useState("");
@@ -64,6 +68,11 @@ export default function Register() {
         division,
         specialties,
         skill,
+        coins,
+        level,
+        xp,
+        lessons,
+        characters,
         team,
         bio,
         idToken: googleSignedIn ? idToken : undefined,
@@ -92,7 +101,7 @@ export default function Register() {
     }
   };
 
-  const signInWithGoogle = async () => {
+  /*const signInWithGoogle = async () => {
     if (!auth) return;
 
     const provider = new GoogleAuthProvider();
@@ -101,6 +110,42 @@ export default function Register() {
       const idToken = await result.user.getIdToken();
       setIdToken(idToken);
       setEmail(result.user.email || "");
+      setName(result.user.displayName || "");
+      setGoogleSignedIn(true);
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      setError("Google sign-in failed. Please try again.");
+    }
+  };*/
+
+
+  const signInWithGoogle = async () => {
+    if (!auth) return;
+
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken();
+      const email = result.user.email || "";
+      
+      // Check if the email is already in use
+      const response = await fetch("../../api/auth/checkEmail", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.exists) {
+        setError("Email already in use");
+        return;
+      }
+
+      setIdToken(idToken);
+      setEmail(email);
       setName(result.user.displayName || "");
       setGoogleSignedIn(true);
     } catch (error) {
@@ -125,14 +170,12 @@ export default function Register() {
               <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} id="email" required />
             </div>
           )}
-          {!googleSignedIn && (
-            <div className="mb-4">
-              <label htmlFor="name" className="block text-gray-700 text-xs font-bold mb-2 uppercase">
-                Username <span className="text-red-500">*</span>
-              </label>
-              <Input type="text" value={name} onChange={(e) => setName(e.target.value)} id="name" required />
-            </div>
-          )}
+          <div className="mb-4">
+            <label htmlFor="name" className="block text-gray-700 text-xs font-bold mb-2 uppercase">
+              Username <span className="text-red-500">*</span>
+            </label>
+            <Input type="text" value={name} onChange={(e) => setName(e.target.value)} id="name" required />
+          </div>
           {!googleSignedIn && (
             <div className="mb-4">
               <label htmlFor="password" className="block text-gray-700 text-xs font-bold mb-2 uppercase">

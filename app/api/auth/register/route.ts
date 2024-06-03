@@ -4,7 +4,7 @@ import { db } from '@/lib/firebase';
 
 export async function POST(req) {
   const body = await req.json();
-  const { email, password, name, division, specialties, team, bio, idToken } = body;
+  const { email, password, name, division, specialties, skill, coins, level, xp, lessons, characters, team, bio, idToken } = body;
 
   if (idToken) {
     const decodedToken = await verifyGoogleToken(idToken);
@@ -33,6 +33,12 @@ export async function POST(req) {
     name,
     division,
     specialties,
+    skill,
+    coins,
+    level,
+    xp,
+    lessons,
+    characters,
     team,
     bio,
   };
