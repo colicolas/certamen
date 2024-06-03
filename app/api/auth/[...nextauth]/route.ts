@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { db } from "../../../../lib/firebase";
-import { verifyPassword } from "../../../../lib/auth";
+import { db } from "@/lib/firebase";
+import { verifyPassword } from "@/lib/auth";
 
 // Define authentication options for NextAuth
 const authOptions = {

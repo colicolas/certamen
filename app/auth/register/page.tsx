@@ -85,7 +85,7 @@ export default function Register() {
 
     const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(provider);
+      const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
       setIdToken(idToken);
       setEmail(result.user.email || "");
@@ -100,15 +100,15 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-beige-500">
       <div className="bg-beige-300 p-8 rounded-lg shadow-lg max-w-lg w-full"> {/* max-w-lg to make it wider */}
-        <h2 className="text-center text-2xl font-bold text-gray-900 mb-6 uppercase">Sign Up</h2> {/* Darker and capitalized */}
+        <h2 className="text-center text-2xl font-bold text-gray-900 mb-6">
+          {googleSignedIn ? 'Finish Account Creation' : 'Sign Up'}
+        </h2>
         {error && <div className="mb-4 text-red-500">{error}</div>}
         <form onSubmit={registerUser}>
           {!googleSignedIn && (
             <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} id="email" />
           )}
-          {!googleSignedIn && (
-            <Input label="Username" type="text" value={name} onChange={(e) => setName(e.target.value)} id="name" />
-          )}
+          <Input label="Username" type="text" value={name} onChange={(e) => setName(e.target.value)} id="name" />
           {!googleSignedIn && (
             <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} id="password" />
           )}
@@ -150,11 +150,11 @@ export default function Register() {
             Register
           </button>
         </form>
-        <div className="mt-4">
+        {!googleSignedIn && (<div className="mt-4">
           <button onClick={signInWithGoogle} className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-400 focus:outline-none focus:shadow-outline">
             Sign Up with Google
           </button>
-        </div>
+        </div>)}
       </div>
     </div>
   );
