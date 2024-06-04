@@ -2,8 +2,8 @@ import NextAuth from "next-auth";
 import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-//import { NextRequest, NextResponse } from 'next/server';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
+//import { NextApiRequest, NextApiResponse } from 'next';
 import { db } from "@/lib/firebase";
 import { verifyPassword } from "@/lib/auth";
 
@@ -74,5 +74,13 @@ const authOptions: NextAuthOptions = {
 };
 
 
-export const GET = async (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);
+const handler = (req: NextRequest) => {
+  // Convert NextRequest to NextApiRequest
+  const nextAuthHandler = NextAuth(authOptions);
+  return nextAuthHandler(req, new NextResponse());
+};
+
+export const GET = handler;
+export const POST = handler;
+/*export const GET = async (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);
+export const POST = async (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);*/
