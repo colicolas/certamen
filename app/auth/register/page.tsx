@@ -11,11 +11,11 @@ export default function Register() {
   const [name, setName] = useState("");
   const [division, setDivision] = useState("");
   const [specialties, setSpecialties] = useState<string[]>([]);
-  const [skill, setSkill] = useState<int[]>([0, 0, 0, 0, 0]);
+  const [skill, setSkill] = useState<number[]>([0, 0, 0, 0, 0]);
   const [coins, setCoins] = useState(0);
   const [level, setLevel] = useState(1);
   const [xp, setXp] = useState(0);
-  const [lessons, setLessons] = useState<int[]>([]);
+  const [lessons, setLessons] = useState<number[]>([]);
   const [characters, setCharacters] = useState<string[]>([]);
   const [team, setTeam] = useState<string[]>([]);
   const [bio, setBio] = useState("none yet!");

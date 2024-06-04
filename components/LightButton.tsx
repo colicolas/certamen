@@ -6,7 +6,7 @@ type ButtonProps = {
   link: string;
   style?: string;
   color?: string;
-  number?: int;
+  number?: number;
 };
 
 const LightButton: React.FC<ButtonProps> = ({ text, link, style='', color="beige", number=300 }) => {
