@@ -2,7 +2,10 @@
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import Input from "@/components/FormTextInput";
+import { auth } from '@/lib/firebaseClient';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import FormButton from "@/components/FormButton";
+import { browserPopupRedirectResolver } from "firebase/auth";
 
 export default function SignIn() {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -17,10 +20,45 @@ export default function SignIn() {
       if (result?.error) {
         setError(result.error);
       } else {
-        setError("Failed to log in. Please try again.");
+        setError("");
+        console.log("successful log in!");
+        //setError("Failed to log in. Please try again.");
       }
     } catch (error) {
       setError("Failed to log in. Please try again.");
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    if (!auth) return;
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider, browserPopupRedirectResolver);
+      const email = result.user.email || "";
+
+      // Check if the email is already in use with credentials
+      const response = await fetch("/api/auth/checkEmail", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.exists && data.hasPassword) {
+        setError(
+          "This email is already registered with a password. Please use the credentials option to log in."
+        );
+        return;
+      }
+
+      const idToken = await result.user.getIdToken();
+      //await signIn("google", { idToken, redirect: false });
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      setError("Google sign-in failed. Please try again.");
     }
   };
 
@@ -55,7 +93,7 @@ export default function SignIn() {
           </div>
           <div className="flex justify-between items-center">
             <FormButton text="Log In" style="text-white bg-indigo-600 hover:bg-indigo-400" />
-            <FormButton text="With Google" style="border-indigo-600 text-gray-800 bg-beige-300 hover:bg-beige-500" onClick={() => signIn("google")} type="button" />
+            <FormButton text="With Google" style="border-indigo-600 text-gray-800 bg-beige-300 hover:bg-beige-500" onClick={signInWithGoogle/*() => signIn("google")*/} type="button" />
           </div>
           <div className="mt-4">
             <a

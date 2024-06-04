@@ -4,6 +4,7 @@ import { auth } from '@/lib/firebaseClient';
 import Input from '@/components/FormTextInput';
 import firebase from 'firebase/compat/app';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { browserPopupRedirectResolver } from "firebase/auth";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -22,6 +23,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const [idToken, setIdToken] = useState("");
   const [googleSignedIn, setGoogleSignedIn] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false); // Add this state
 
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -59,30 +61,55 @@ export default function Register() {
     }
     setError(""); // Clear any previous errors
 
+    const userData: { [key: string]: any } = {
+      email,
+      //password: googleSignedIn ? undefined : password,
+      name,
+      division,
+      specialties,
+      skill,
+      coins,
+      level,
+      xp,
+      lessons,
+      characters,
+      team,
+      bio,
+      //idToken: googleSignedIn ? idToken : undefined,
+    };
+
+    if (!googleSignedIn) {
+      console.log("good morning USA");
+      userData.password = password;
+    } else {
+      console.log("why isnt' it working");
+      userData.idToken = idToken;
+    }
+
+    // Remove undefined fields
+    Object.keys(userData).forEach(key => {
+      if (userData[key] === undefined) {
+        delete userData[key];
+      }
+    });
+
+    console.log("goo");
     const response = await fetch("/api/auth/register", {
       method: "POST",
-      body: JSON.stringify({
-        email,
-        password: googleSignedIn ? undefined : password,
-        name,
-        division,
-        specialties,
-        skill,
-        coins,
-        level,
-        xp,
-        lessons,
-        characters,
-        team,
-        bio,
-        idToken: googleSignedIn ? idToken : undefined,
-      }),
+      body: JSON.stringify(userData),
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    const data = await response.json();
+    console.log("bah");
+    let data;
+    try {
+      data = await response.json();
+    } catch (error) {
+      setError("Failed to parse server response. Please try again.");
+      return;
+    }
 
     if (!response.ok) {
       setError(data.message || "Failed to register");
@@ -120,14 +147,20 @@ export default function Register() {
 
 
   const signInWithGoogle = async () => {
-    if (!auth) return;
-
+    if (!auth || isSigningIn) return;
+    setIsSigningIn(true); // Disable the button
+    
     const provider = new GoogleAuthProvider();
+    console.log("1");
     try {
-      const result = await signInWithPopup(auth, provider);
+      console.log("2");
+      const result = await signInWithPopup(auth, provider, browserPopupRedirectResolver);
+      console.log("3");
       const idToken = await result.user.getIdToken();
+      console.log("4");
       const email = result.user.email || "";
-      
+     
+      console.log("5");
       // Check if the email is already in use
       const response = await fetch("../../api/auth/checkEmail", {
         method: "POST",
@@ -137,9 +170,12 @@ export default function Register() {
         },
       });
 
+      console.log("6");
+
       const data = await response.json();
 
       if (data.exists) {
+        setIsSigningIn(false);
         setError("Email already in use");
         return;
       }
@@ -147,8 +183,10 @@ export default function Register() {
       setIdToken(idToken);
       setEmail(email);
       setName(result.user.displayName || "");
+      setIsSigningIn(false);
       setGoogleSignedIn(true);
     } catch (error) {
+      setIsSigningIn(false);
       console.error("Google sign-in error:", error);
       setError("Google sign-in failed. Please try again.");
     }

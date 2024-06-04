@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
   let hashedPassword = password;
   if (!idToken) {
-    const hashedPassword = password ? await hashPassword(password) : undefined;
+    hashedPassword = password ? await hashPassword(password) : undefined;
   //  hashedPassword = await hashPassword(password);
   }
 
@@ -57,12 +57,11 @@ export async function POST(req: NextRequest) {
     characters,
     team,
     bio,
-    idToken
+    //idToken
   };
 
-  if (!idToken) {
-    userData.password = hashedPassword;
-  }
+  if (hashedPassword) userData.password = hashedPassword;
+  if (idToken) userData.idToken = idToken;
 
   await db.collection('users').add(userData);
 

@@ -12,6 +12,12 @@ const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      authorization: {
+        params: {
+          prompt: "select_account",
+          scope: "openid profile email",
+        },
+      },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -74,13 +80,12 @@ const authOptions: NextAuthOptions = {
 };
 
 
-const handler = (req: NextRequest) => {
-  // Convert NextRequest to NextApiRequest
+
+
+const handler = (req: NextRequest, res: NextResponse) => {
   const nextAuthHandler = NextAuth(authOptions);
-  return nextAuthHandler(req, new NextResponse());
+  return nextAuthHandler(req as any, res as any);
 };
 
 export const GET = handler;
 export const POST = handler;
-/*export const GET = async (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);*/
