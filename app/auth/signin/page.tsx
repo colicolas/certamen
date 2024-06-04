@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import Input from "@/components/FormTextInput";
 import FormButton from "@/components/FormButton";
@@ -9,7 +9,7 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const result = await signIn("credentials", { redirect: false, email: emailOrUsername, password });
