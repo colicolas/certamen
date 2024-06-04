@@ -24,11 +24,27 @@ export async function POST(req: NextRequest) {
   }
 
   let hashedPassword = password;
-  if (!idToken && password) {
-    hashedPassword = await hashPassword(password);
+  if (!idToken) {
+    const hashedPassword = password ? await hashPassword(password) : undefined;
+  //  hashedPassword = await hashPassword(password);
   }
 
-  const userData = {
+  const userData: {
+    email: string;
+    password?: string;
+    name: string;
+    division: string;
+    specialties: string[];
+    skill: number[];
+    coins: number;
+    level: number;
+    xp: number;
+    lessons: number[];
+    characters: string[];
+    team: string[];
+    bio: string;
+    idToken?: string;
+  } = {
     email,
     name,
     division,
@@ -41,6 +57,7 @@ export async function POST(req: NextRequest) {
     characters,
     team,
     bio,
+    idToken
   };
 
   if (!idToken) {
