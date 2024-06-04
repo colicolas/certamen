@@ -1,10 +1,12 @@
 import NextAuth from "next-auth";
+import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { NextApiRequest, NextApiResponse } from 'next';
 import { db } from "@/lib/firebase";
 import { verifyPassword } from "@/lib/auth";
 
-const authOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -69,5 +71,6 @@ const authOptions = {
   },
 };
 
-export const GET = async (req, res) => NextAuth(req, res, authOptions);
-export const POST = async (req, res) => NextAuth(req, res, authOptions);
+
+export const GET = async (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);
+export const POST = async (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);
