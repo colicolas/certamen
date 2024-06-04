@@ -54,6 +54,7 @@ const authOptions: NextAuthOptions = {
     signIn: "/auth/signin",
     error: "/auth/error",
   },
+  secret: process.env.NEXTAUTH_SECRET as string,
   callbacks: {
     async session({ session, token }: { session: any, token: any }) {
       session.user.id = token.id;
