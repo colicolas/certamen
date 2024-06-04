@@ -58,7 +58,7 @@ const authOptions = {
       session.user.studyPreferences = token.studyPreferences;
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user }: {token: any, user: any}) {
       if (user) {
         token.id = user.id;
         token.level = user.level;
