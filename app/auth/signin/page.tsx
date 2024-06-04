@@ -13,8 +13,11 @@ export default function SignIn() {
     e.preventDefault();
     try {
       const result = await signIn("credentials", { redirect: false, email: emailOrUsername, password });
-      if (result.error) {
+
+      if (result?.error) {
         setError(result.error);
+      } else {
+        setError("Failed to log in. Please try again.");
       }
     } catch (error) {
       setError("Failed to log in. Please try again.");
