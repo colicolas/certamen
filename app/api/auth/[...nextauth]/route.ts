@@ -17,6 +17,9 @@ const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        if (!credentials) {
+          throw new Error('No credentials provided');
+        }
         let userRef = await db.collection('users').where('email', '==', credentials.email).get();
         if (userRef.empty) {
           userRef = await db.collection('users').where('name', '==', credentials.email).get();
