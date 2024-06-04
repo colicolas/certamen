@@ -9,6 +9,12 @@ if (!admin.apps.length) {
   });
 }
 
+
+export async function verifyPassword(plainPassword: string, hashedPassword: string) {
+  const isValid = await bcrypt.compare(plainPassword, hashedPassword);
+  return isValid;
+}
+
 export const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(12);
   const hashedPassword = await bcrypt.hash(password, salt);

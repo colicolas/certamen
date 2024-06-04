@@ -18,18 +18,30 @@ const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const userRef = await db.collection('users').where('email', '==', credentials.email).get();
+        let userRef = await db.collection('users').where('email', '==', credentials.email).get();
         if (userRef.empty) {
-          throw new Error("No user found with the email");
+          userRef = await db.collection('users').where('name', '==', credentials.email).get();
+          if (userRef.empty) {
+            throw new Error('No user found with the provided email/username');
+          }
         }
 
         const user = userRef.docs[0].data();
         const isValid = await verifyPassword(credentials.password, user.password);
         if (!isValid) {
-          throw new Error("Incorrect password");
+          throw new Error('Incorrect password');
         }
 
+        console.log('User logged in:', {
+          email: user.email,
+          name: user.name,
+          id: user.id,
+          level: user.level,
+          studyPreferences: user.studyPreferences,
+        });
+
         return { email: user.email, name: user.name, id: user.id, level: user.level, studyPreferences: user.studyPreferences };
+
       },
     }),
   ],

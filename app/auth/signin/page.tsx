@@ -2,18 +2,17 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Input from "@/components/FormTextInput";
-import LightButton from "@/components/LightButton";
-import DarkButton from "@/components/DarkButton";
+import FormButton from "@/components/FormButton";
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
+  const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await signIn("credentials", { redirect: false, email, password });
+      const result = await signIn("credentials", { redirect: false, email: emailOrUsername, password });
       if (result.error) {
         setError(result.error);
       }
@@ -29,14 +28,13 @@ export default function SignIn() {
         {error && <div className="text-red-500">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 text-xs font-bold mb-2 uppercase">
+            <label htmlFor="emailOrUsername" className="block text-gray-700 text-xs font-bold mb-2 uppercase">
               Email/Username <span className="text-red-500">*</span>
             </label>
             <Input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="emailOrUsername"
+              value={emailOrUsername}
+              onChange={(e) => setEmailOrUsername(e.target.value)}
               required
             />
           </div>
@@ -53,19 +51,8 @@ export default function SignIn() {
             />
           </div>
           <div className="flex justify-between items-center">
-            <button
-              type="submit"
-              className="px-4 py-2 text-white bg-indigo-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              Log In
-            </button>
-            <button
-              type="button"
-              className="px-4 py-2 text-white bg-indigo-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              onClick={() => signIn("google")}
-            >
-              With Google
-            </button>
+            <FormButton text="Log In" style="text-white bg-indigo-600 hover:bg-indigo-400" />
+            <FormButton text="With Google" style="border-indigo-600 text-gray-800 bg-beige-300 hover:bg-beige-500" onClick={() => signIn("google")} type="button" />
           </div>
           <div className="mt-4">
             <a
