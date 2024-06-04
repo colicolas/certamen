@@ -1,5 +1,6 @@
 // app/page.tsx
 import React from 'react';
+import Link from 'next/link';
 import LightButton from '../components/LightButton';
 import DarkButton from '../components/DarkButton';
 import Head from 'next/head';
