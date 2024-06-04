@@ -18,32 +18,6 @@ if (!admin.apps.length) {
   });
 }
 
-/*if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-//      type: process.env.FIREBASE_TYPE,
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      //privateKeyId: process.env.FIREBASE_PRIVATE_KEY_ID,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      /*clientId: process.env.FIREBASE_CLIENT_ID,
-      authUri: process.env.FIREBASE_AUTH_URI,
-      tokenUri: process.env.FIREBASE_TOKEN_URI,
-      authProviderX509CertUrl: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
-      clientX509CertUrl: process.env.FIREBASE_CLIENT_X509_CERT_URL,
-    })
-  });
-}*/
-
-// Initialize Firebase Admin SDK
-/*if (!admin.apps.length) {
-  const serviceAccount = require('../jsonkeys/certamenauth-26fdf90a7715.json');
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-}*/
-
-
 export async function verifyPassword(plainPassword: string, hashedPassword: string) {
   const isValid = await bcrypt.compare(plainPassword, hashedPassword);
   return isValid;
@@ -60,7 +34,6 @@ export const verifyGoogleToken = async (idToken: string) => {
   return decodedToken;
 };
 
-// Example of an authentication function, adjust as necessary
 export const checkAuth = (req: any, res: any, next: any) => {
   const token = req.headers.authorization;
   if (!token) {
