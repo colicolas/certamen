@@ -52,7 +52,7 @@ const authOptions = {
     error: "/auth/error",
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token }: { session: any, token: any }) {
       session.user.id = token.id;
       session.user.level = token.level;
       session.user.studyPreferences = token.studyPreferences;
