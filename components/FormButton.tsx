@@ -12,7 +12,7 @@ const FormButton: React.FC<FormButtonProps> = ({ text, onClick, type = 'submit',
     <button
       type={type}
       onClick={onClick}
-      className={`border text-white py-2 px-4 rounded transition duration-300 ${style}`}
+      className={`border py-2 px-4 rounded transition duration-300 ${style}`}
     >
       {text}
     </button>
