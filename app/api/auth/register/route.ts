@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { verifyGoogleToken, hashPassword } from '@/lib/auth';
 import { db } from '@/lib/firebase';
 
-export async function POST(req) {
+export async function POST(req: NextRequest) {
   const body = await req.json();
   const { email, password, name, division, specialties, skill, coins, level, xp, lessons, characters, team, bio, idToken } = body;
 
