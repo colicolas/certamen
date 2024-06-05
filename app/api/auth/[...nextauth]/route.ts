@@ -44,15 +44,39 @@ const authOptions: NextAuthOptions = {
         }
 
         console.log('User logged in:', {
+
           email: user.email,
           name: user.name,
-          id: user.id,
+          profile: user.profile,
+          division: user.division,
+          specialties: user.specialties,
+          skill: user.skill,
+          coins: user.coins,
           level: user.level,
-          studyPreferences: user.studyPreferences,
+          xp: user.xp,
+          lessons: user.lessons,
+          characters: user.characters,
+          team: user.team,
+          bio: user.bio,
+          id: user.id,
         });
 
-        return { email: user.email, name: user.name, id: user.id, level: user.level, studyPreferences: user.studyPreferences };
-
+        return {
+          email: user.email,
+          name: user.name,
+          profile: user.profile,
+          division: user.division,
+          specialties: user.specialties,
+          skill: user.skill,
+          coins: user.coins,
+          level: user.level,
+          xp: user.xp,
+          lessons: user.lessons,
+          characters: user.characters,
+          team: user.team,
+          bio: user.bio,
+          id: user.id
+        };
       },
     }),
   ],
@@ -64,23 +88,42 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token }: { session: any, token: any }) {
       session.user.id = token.id;
+      session.user.email = token.email;
+      session.user.name = token.name;
+      session.user.profile = token.profile;
+      session.user.division = token.division;
+      session.user.specialties = token.specialties;
+      session.user.skill = token.skill;
+      session.user.coins = token.coins;
       session.user.level = token.level;
-      session.user.studyPreferences = token.studyPreferences;
+      session.user.xp = token.xp;
+      session.user.lessons = token.lessons;
+      session.user.characters = token.characters;
+      session.user.team = token.team;
+      session.user.bio = token.bio;
       return session;
     },
     async jwt({ token, user }: {token: any, user: any}) {
       if (user) {
         token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.profile = user.profile;
+        token.division = user.division;
+        token.specialties = user.specialties;
+        token.skill = user.skill;
+        token.coins = user.coins;
         token.level = user.level;
-        token.studyPreferences = user.studyPreferences;
-      }
+        token.xp = user.xp;
+        token.lessons = user.lessons;
+        token.characters = user.characters;
+        token.team = user.team;
+        token.bio = user.bio;
+      } 
       return token;
     },
   },
 };
-
-
-
 
 const handler = (req: NextRequest, res: NextResponse) => {
   const nextAuthHandler = NextAuth(authOptions);

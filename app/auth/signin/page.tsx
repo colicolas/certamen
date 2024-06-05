@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Input from "@/components/FormTextInput";
 import { auth } from '@/lib/firebaseClient';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
@@ -29,6 +29,7 @@ export default function SignIn() {
     }
   };
 
+  
   const signInWithGoogle = async () => {
     if (!auth) return;
     const provider = new GoogleAuthProvider();
@@ -47,15 +48,21 @@ export default function SignIn() {
 
       const data = await response.json();
 
-      if (data.exists && data.hasPassword) {
-        setError(
-          "This email is already registered with a password. Please use the credentials option to log in."
-        );
-        return;
+      if (data.exists) {
+        if (data.error) {
+          setError("This email is already registered with a password. Please use the credentials option to log in.");
+          await signOut({ redirect: false }); // Sign out the Google account immediately
+        } else {
+          setError("");
+          console.log("successful log in!");
+          // Proceed with Google sign-in
+          //await signIn("google", { redirect: false });
+        }
       }
-
-      const idToken = await result.user.getIdToken();
-      //await signIn("google", { idToken, redirect: false });
+      else
+      {
+        setError("No account has been registered under this email.");
+      }
     } catch (error) {
       console.error("Google sign-in error:", error);
       setError("Google sign-in failed. Please try again.");

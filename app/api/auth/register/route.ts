@@ -4,7 +4,7 @@ import { db } from '@/lib/firebase';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { email, password, name, division, specialties, skill, coins, level, xp, lessons, characters, team, bio, idToken } = body;
+  const { email, password, name, profile, division, specialties, skill, coins, level, xp, lessons, characters, team, bio, idToken } = body;
 
   if (idToken) {
     const decodedToken = await verifyGoogleToken(idToken);
@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
     email: string;
     password?: string;
     name: string;
+    profile: string;
     division: string;
     specialties: string[];
     skill: number[];
@@ -47,6 +48,7 @@ export async function POST(req: NextRequest) {
   } = {
     email,
     name,
+    profile,
     division,
     specialties,
     skill,
@@ -63,7 +65,8 @@ export async function POST(req: NextRequest) {
   if (hashedPassword) userData.password = hashedPassword;
   if (idToken) userData.idToken = idToken;
 
-  await db.collection('users').add(userData);
+  const newUserRef = await db.collection('users').add(userData);
+  await newUserRef.update({ id: newUserRef.id });
 
   return NextResponse.json({ message: "User created" }, { status: 201 });
 }

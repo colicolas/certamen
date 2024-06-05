@@ -10,6 +10,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [profile, setProfile] = useState("default");
   const [division, setDivision] = useState("");
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [skill, setSkill] = useState<number[]>([0, 0, 0, 0, 0]);
@@ -65,6 +66,7 @@ export default function Register() {
       email,
       //password: googleSignedIn ? undefined : password,
       name,
+      profile,
       division,
       specialties,
       skill,
