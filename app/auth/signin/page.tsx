@@ -6,6 +6,7 @@ import { auth } from '@/lib/firebaseClient';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import FormButton from "@/components/FormButton";
 import { browserPopupRedirectResolver } from "firebase/auth";
+import Link from 'next/link';
 
 export default function SignIn() {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -103,19 +104,19 @@ export default function SignIn() {
             <FormButton text="With Google" style="border-indigo-600 text-gray-800 bg-beige-300 hover:bg-beige-500" onClick={signInWithGoogle/*() => signIn("google")*/} type="button" />
           </div>
           <div className="mt-4">
-            <a
+            <Link
               href="#"
               className="text-sm text-indigo-600 hover:underline"
             >
               Forgot your password?
-            </a>
+            </Link>
           </div>
         </form>
         <p className="mt-4 text-sm text-center text-gray-600">
           Need an account?{" "}
-          <a href="/auth/register" className="text-indigo-600 hover:underline">
+          <Link href="/auth/register" className="text-indigo-600 hover:underline">
             Register
-          </a>
+          </Link>
         </p>
       </div>
     </div>
