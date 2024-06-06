@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-//import { useSession, signIn } from "next-auth/react";
 import TopNavbar from "@/components/TopNavbar";
 import BottomNavbar from "@/components/BottomNavbar";
 import { authOptions } from "@/lib/authOptions";
@@ -18,12 +17,22 @@ const DashboardLayout = async ({ children }: { children: ReactNode }) => {
     );
   }
   
+
   const user = {
-    level: 1,
-    xp: 50,
-    coins: 100,
-    profilePic: "/path/to/profile-pic.jpg",
+    level: session.user.level !== undefined ? session.user.level : 1,
+    xp: session.user.xp !== undefined ? session.user.xp : 0,
+    coins: session.user.coins !== undefined ? session.user.coins : 0,
+    profilePic: session.user.profile
+      ? `/${session.user.profile}.jpg`
+      : "/path/to/profile-pic.jpg",
   };
+
+  /*const user = {
+    level: session.user.level || 2,
+    xp: session.user.xp || 1,
+    coins: session.user.coins || 1,
+    profilePic: "/" + session.user.profile + ".jpg" || "/path/to/profile-pic.jpg",
+  };*/
 
   return (
     <div className="min-h-screen flex flex-col">
