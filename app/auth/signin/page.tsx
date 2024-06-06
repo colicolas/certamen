@@ -39,41 +39,14 @@ export default function SignIn() {
     }
   };
 
-
-  const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-
-    try {
-      // Step 1: Sign in with Google via NextAuth
-      const result = await signIn("google", { redirect: false });
-      if (result?.error) {
-        setError(result.error);
-        return;
-      }
-
-      // Step 2: Retrieve the custom token from the session
-      const response = await fetch('/api/auth/session');
-      const data = await response.json();
-      const firebaseToken = data.firebaseToken;
-
-      if (!firebaseToken) {
-        setError("Failed to retrieve Firebase token.");
-        return;
-      }
-
-      // Step 3: Sign in to Firebase with the custom token
-      await signInWithCustomToken(auth, firebaseToken);
-
-      router.push('/study');
-    } catch (error) {
-      console.error("Google sign-in error:", error);
-      setError("Google sign-in failed. Please try again.");
-    }
-  };
-  
- /*const signInWithGoogle = async () => {
+ 
+ const signInWithGoogle = async () => {
     if (!auth) return;
     const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+      prompt: 'select_account',
+    });
+
     try {
       const result = await signInWithPopup(auth, provider, browserPopupRedirectResolver);
       const idToken = await result.user.getIdToken();
@@ -103,7 +76,7 @@ export default function SignIn() {
             setError(signInResult.error);
           }/* else {
             router.push('/study');
-          }
+          }*/
         }
       } else {
         setError("No account has been registered under this email.");
@@ -113,7 +86,7 @@ export default function SignIn() {
       console.error("Google sign-in error:", error);
       setError("Google sign-in failed. Please try again.");
     }
-  };*/
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-beige-500">
