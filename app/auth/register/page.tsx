@@ -5,8 +5,14 @@ import Input from '@/components/FormTextInput';
 import firebase from 'firebase/compat/app';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { browserPopupRedirectResolver } from "firebase/auth";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function Register() {
+  const router = useRouter();
+  const { data: session } = useSession();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -26,7 +32,13 @@ export default function Register() {
   const [googleSignedIn, setGoogleSignedIn] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false); // Add this state
 
-  const validateEmail = (email: string) => {
+  /*useEffect(() => {
+    if (session) {
+      router.push('/auth/signin');
+    }
+  }, [session, router]);*/
+
+ const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
@@ -123,30 +135,13 @@ export default function Register() {
         setError(data.message); // Display server-side error
       } else {
         console.log(data);
+        router.push('/auth/signin');
       }
     } catch (error) {
       setError("Failed to parse response");
       console.error("Failed to parse JSON response", error);
     }
   };
-
-  /*const signInWithGoogle = async () => {
-    if (!auth) return;
-
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const idToken = await result.user.getIdToken();
-      setIdToken(idToken);
-      setEmail(result.user.email || "");
-      setName(result.user.displayName || "");
-      setGoogleSignedIn(true);
-    } catch (error) {
-      console.error("Google sign-in error:", error);
-      setError("Google sign-in failed. Please try again.");
-    }
-  };*/
-
 
   const signInWithGoogle = async () => {
     if (!auth || isSigningIn) return;
@@ -187,6 +182,7 @@ export default function Register() {
       setName(result.user.displayName || "");
       setIsSigningIn(false);
       setGoogleSignedIn(true);
+      
     } catch (error) {
       setIsSigningIn(false);
       console.error("Google sign-in error:", error);
