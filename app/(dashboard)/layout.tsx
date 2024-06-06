@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 //import { useSession, signIn } from "next-auth/react";
 import TopNavbar from "@/components/TopNavbar";
 import BottomNavbar from "@/components/BottomNavbar";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth/next";
 
 const DashboardLayout = async ({ children }: { children: ReactNode }) => {

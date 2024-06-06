@@ -4,7 +4,19 @@ import { faCog, faCoins } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const BottomNavbar = ({ user }) => {
+
+interface User {
+  xp: number;
+  level: number;
+  coins: number;
+  profilePic: string;
+}
+
+interface BottomNavbarProps {
+  user: User;
+}
+
+const BottomNavbar: React.FC<BottomNavbarProps> = ({ user }) => {
   const totalXP = 100; // Assume 100 XP to the next level
   const progressPercentage = (user.xp / totalXP) * 100;
 
@@ -30,7 +42,7 @@ const BottomNavbar = ({ user }) => {
         <Link href="/settings" passHref>
           <FontAwesomeIcon icon={faCog} />
         </Link>
-        <Image src={user.profilePic} alt="Profile" className="w-8 h-8 rounded-full" />
+        <Image width={40} height={40} src={user.profilePic} alt="Profile" className="w-8 h-8 rounded-full" />
       </div>
     </nav>
   );

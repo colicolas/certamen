@@ -6,9 +6,8 @@ import { NextRequest, NextResponse } from 'next/server';
 //import { NextApiRequest, NextApiResponse } from 'next';
 import { db } from "@/lib/firebase";
 import { verifyPassword } from "@/lib/auth";
-import { authOptions } from "@/lib/authOptions";
 
-/*const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -126,15 +125,5 @@ import { authOptions } from "@/lib/authOptions";
       return token;
     },
   },
-};*/
-
-//export {authOptions};
-
-const handler = (req: NextRequest, res: NextResponse) => {
-  const nextAuthHandler = NextAuth(authOptions);
-  return nextAuthHandler(req as any, res as any);
 };
-
-export const GET = handler;
-export const POST = handler;
 
