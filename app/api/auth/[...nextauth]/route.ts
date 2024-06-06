@@ -4,7 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextRequest, NextResponse } from 'next/server';
 //import { NextApiRequest, NextApiResponse } from 'next';
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { verifyPassword } from "@/lib/auth";
 
 const authOptions: NextAuthOptions = {
@@ -38,6 +38,10 @@ const authOptions: NextAuthOptions = {
         }
 
         const user = userRef.docs[0].data();
+        if (!user.password) {
+          throw new Error('This account was registered with Google. Please use Google to sign in.');
+        }
+
         const isValid = await verifyPassword(credentials.password, user.password);
         if (!isValid) {
           throw new Error('Incorrect password');
@@ -119,6 +123,8 @@ const authOptions: NextAuthOptions = {
         token.characters = user.characters;
         token.team = user.team;
         token.bio = user.bio;
+        const firebaseToken = await admin.auth().createCustomToken(firebaseUser.uid);
+        token.firebaseToken = firebaseToken; // Attach the Firebase custom token to the token object
       } 
       return token;
     },

@@ -1,17 +1,26 @@
 "use client";
-import React, { useState } from "react";
-import { signIn, signOut } from "next-auth/react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn, useSession, signOut } from "next-auth/react";
 import Input from "@/components/FormTextInput";
 import { auth } from '@/lib/firebaseClient';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, getAuth, signInWithCustomToken, signInWithCredential } from 'firebase/auth';
 import FormButton from "@/components/FormButton";
 import { browserPopupRedirectResolver } from "firebase/auth";
 import Link from 'next/link';
 
 export default function SignIn() {
+  const {data : session} = useSession();
+  const router = useRouter();
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (session) {
+      router.push('/study');
+    }
+  }, [session, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,12 +39,44 @@ export default function SignIn() {
     }
   };
 
-  
+
   const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+
+    try {
+      // Step 1: Sign in with Google via NextAuth
+      const result = await signIn("google", { redirect: false });
+      if (result?.error) {
+        setError(result.error);
+        return;
+      }
+
+      // Step 2: Retrieve the custom token from the session
+      const response = await fetch('/api/auth/session');
+      const data = await response.json();
+      const firebaseToken = data.firebaseToken;
+
+      if (!firebaseToken) {
+        setError("Failed to retrieve Firebase token.");
+        return;
+      }
+
+      // Step 3: Sign in to Firebase with the custom token
+      await signInWithCustomToken(auth, firebaseToken);
+
+      router.push('/study');
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      setError("Google sign-in failed. Please try again.");
+    }
+  };
+  
+ /*const signInWithGoogle = async () => {
     if (!auth) return;
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider, browserPopupRedirectResolver);
+      const idToken = await result.user.getIdToken();
       const email = result.user.email || "";
 
       // Check if the email is already in use with credentials
@@ -56,19 +97,23 @@ export default function SignIn() {
         } else {
           setError("");
           console.log("successful log in!");
-          // Proceed with Google sign-in
-          //await signIn("google", { redirect: false });
+          // Use the ID token to authenticate with NextAuth
+          const signInResult = await signIn("google", { idToken, redirect: false });
+          if (signInResult?.error) {
+            setError(signInResult.error);
+          }/* else {
+            router.push('/study');
+          }
         }
-      }
-      else
-      {
+      } else {
         setError("No account has been registered under this email.");
+        await signOut({ redirect: false }); // Sign out the Google account immediately
       }
     } catch (error) {
       console.error("Google sign-in error:", error);
       setError("Google sign-in failed. Please try again.");
     }
-  };
+  };*/
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-beige-500">
