@@ -2,6 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faCoins } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const BottomNavbar = ({ user }) => {
   const totalXP = 100; // Assume 100 XP to the next level
@@ -29,7 +30,7 @@ const BottomNavbar = ({ user }) => {
         <Link href="/settings" passHref>
           <FontAwesomeIcon icon={faCog} />
         </Link>
-        <img src={user.profilePic} alt="Profile" className="w-8 h-8 rounded-full" />
+        <Image src={user.profilePic} alt="Profile" className="w-8 h-8 rounded-full" />
       </div>
     </nav>
   );
