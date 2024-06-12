@@ -74,9 +74,7 @@ export default function SignIn() {
           const signInResult = await signIn("google", { idToken, redirect: false });
           if (signInResult?.error) {
             setError(signInResult.error);
-          }/* else {
-            router.push('/study');
-          }*/
+          }
         }
       } else {
         setError("No account has been registered under this email.");

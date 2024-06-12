@@ -15,7 +15,7 @@ export default function Register() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [profile, setProfile] = useState("default");
   const [division, setDivision] = useState("");
   const [specialties, setSpecialties] = useState<string[]>([]);
@@ -64,7 +64,7 @@ export default function Register() {
       setError("Invalid email address");
       return;
     }
-    if (!validateUsername(name)) {
+    if (!validateUsername(username)) {
       setError("Username can only contain letters, numbers, and the characters '.', '-', '_', '!', and '?' and must be at least 3 characters long");
       return;
     }
@@ -77,7 +77,7 @@ export default function Register() {
     const userData: { [key: string]: any } = {
       email,
       //password: googleSignedIn ? undefined : password,
-      name,
+      username,
       profile,
       division,
       specialties,
@@ -179,10 +179,9 @@ export default function Register() {
 
       setIdToken(idToken);
       setEmail(email);
-      setName(result.user.displayName || "");
+      //setName(result.user.displayName || "");
       setIsSigningIn(false);
       setGoogleSignedIn(true);
-      
     } catch (error) {
       setIsSigningIn(false);
       console.error("Google sign-in error:", error);
@@ -207,10 +206,10 @@ export default function Register() {
             </div>
           )}
           <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 text-xs font-bold mb-2 uppercase">
+            <label htmlFor="username" className="block text-gray-700 text-xs font-bold mb-2 uppercase">
               Username <span className="text-red-500">*</span>
             </label>
-            <Input type="text" value={name} onChange={(e) => setName(e.target.value)} id="name" required />
+            <Input type="text" value={username} onChange={(e) => setUsername(e.target.value)} id="username" required />
           </div>
           {!googleSignedIn && (
             <div className="mb-4">

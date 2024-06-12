@@ -4,7 +4,7 @@ import { db } from '@/lib/firebase';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { email, password, name, profile, division, specialties, skill, coins, level, xp, lessons, characters, team, bio, idToken } = body;
+  const { email, password, username, profile, division, specialties, skill, coins, level, xp, lessons, characters, team, bio, idToken } = body;
 
   if (idToken) {
     const decodedToken = await verifyGoogleToken(idToken);
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Email already in use" }, { status: 422 });
   }
 
-  const usernameRef = await db.collection('users').where('name', '==', name).get();
+  const usernameRef = await db.collection('users').where('username', '==', username).get();
   if (!usernameRef.empty) {
     return NextResponse.json({ message: "Username already exists" }, { status: 422 });
   }
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   const userData: {
     email: string;
     password?: string;
-    name: string;
+    username: string;
     profile: string;
     division: string;
     specialties: string[];
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     idToken?: string;
   } = {
     email,
-    name,
+    username,
     profile,
     division,
     specialties,
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
   if (idToken) userData.idToken = idToken;
 
   const newUserRef = await db.collection('users').add(userData);
-  await newUserRef.update({ id: newUserRef.id });
+  await newUserRef.update({ userid: newUserRef.id });
 
   return NextResponse.json({ message: "User created" }, { status: 201 });
 }

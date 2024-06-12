@@ -1,11 +1,9 @@
-import NextAuth from "next-auth";
+import NextAuth from 'next-auth';
 import { NextAuthOptions } from 'next-auth';
-import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { NextRequest, NextResponse } from 'next/server';
-//import { NextApiRequest, NextApiResponse } from 'next';
-import { db } from "@/lib/firebase";
-import { verifyPassword } from "@/lib/auth";
+import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { db } from '@/lib/firebase';
+import { verifyPassword } from '@/lib/auth';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -17,6 +15,32 @@ export const authOptions: NextAuthOptions = {
           prompt: "select_account",
           scope: "openid profile email",
         },
+      },
+      profile: async (profile) => {
+        const userRef = await db.collection('users').where('email', '==', profile.email).get();
+        if (!userRef.empty) {
+          const user = userRef.docs[0].data();
+          return {
+            id: user.userid,
+            userid: user.userid,
+            email: user.email,
+            username: user.username,
+            bio: user.bio,
+            profile: user.profile,
+            division: user.division,
+            specialties: user.specialties,
+            skill: user.skill,
+            coins: user.coins,
+            level: user.level,
+            xp: user.xp,
+            lessons: user.lessons,
+            characters: user.characters,
+            team: user.team,
+          };
+        } else {
+          console.log("WHYYY");
+          throw new Error('User not found in database');
+        }
       },
     }),
     CredentialsProvider({
@@ -31,7 +55,7 @@ export const authOptions: NextAuthOptions = {
         }
         let userRef = await db.collection('users').where('email', '==', credentials.email).get();
         if (userRef.empty) {
-          userRef = await db.collection('users').where('name', '==', credentials.email).get();
+          userRef = await db.collection('users').where('username', '==', credentials.email).get();
           if (userRef.empty) {
             throw new Error('No user found with the provided email/username');
           }
@@ -45,27 +69,11 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Incorrect password');
         }
 
-        console.log('User logged in:', {
-
-          email: user.email,
-          name: user.name,
-          profile: user.profile,
-          division: user.division,
-          specialties: user.specialties,
-          skill: user.skill,
-          coins: user.coins,
-          level: user.level,
-          xp: user.xp,
-          lessons: user.lessons,
-          characters: user.characters,
-          team: user.team,
-          bio: user.bio,
-          id: user.id,
-        });
-
         return {
+          userid: user.userid,
           email: user.email,
-          name: user.name,
+          username: user.username,
+          bio: user.bio,
           profile: user.profile,
           division: user.division,
           specialties: user.specialties,
@@ -76,8 +84,6 @@ export const authOptions: NextAuthOptions = {
           lessons: user.lessons,
           characters: user.characters,
           team: user.team,
-          bio: user.bio,
-          id: user.id
         };
       },
     }),
@@ -88,10 +94,10 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET as string,
   callbacks: {
-    async session({ session, token }: { session: any, token: any }) {
-      session.user.id = token.id;
+    async session({ session, token }) {
+      session.user.userid = token.userid;
       session.user.email = token.email;
-      session.user.name = token.name;
+      session.user.username = token.username;
       session.user.profile = token.profile;
       session.user.division = token.division;
       session.user.specialties = token.specialties;
@@ -105,11 +111,11 @@ export const authOptions: NextAuthOptions = {
       session.user.bio = token.bio;
       return session;
     },
-    async jwt({ token, user }: {token: any, user: any}) {
+    async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.userid = user.userid;
         token.email = user.email;
-        token.name = user.name;
+        token.username = user.username;
         token.profile = user.profile;
         token.division = user.division;
         token.specialties = user.specialties;
@@ -121,9 +127,10 @@ export const authOptions: NextAuthOptions = {
         token.characters = user.characters;
         token.team = user.team;
         token.bio = user.bio;
-      } 
+      }
       return token;
     },
   },
 };
 
+export default authOptions;
