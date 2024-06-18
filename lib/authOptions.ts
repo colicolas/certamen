@@ -17,12 +17,67 @@ export const authOptions: NextAuthOptions = {
         },
       },
       profile: async (profile) => {
-        const userRef = await db.collection('users').where('email', '==', profile.email).get();
-        if (!userRef.empty) {
+        try {
+          //console.log('Google profile:', profile);
+          const userRef = await db.collection('users').where('email', '==', profile.email).get();
+          if (!userRef.empty) {
+            const user = userRef.docs[0].data();
+            //console.log("HELLO WORLD" + user.userid);
+            return {
+              id: user.userid,
+              email: user.email,
+              username: user.username,
+              bio: user.bio,
+              profile: user.profile,
+              division: user.division,
+              specialties: user.specialties,
+              skill: user.skill,
+              coins: user.coins,
+              level: user.level,
+              xp: user.xp,
+              lessons: user.lessons,
+              characters: user.characters,
+              team: user.team,
+            };
+          } else {
+            console.log("User not found in database");
+            throw new Error('User not found in database');
+          }
+        } catch (error) {
+          console.error('Error in Google profile callback:', error);
+          throw error;
+        }
+      },
+    }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        try {
+          if (!credentials) {
+            throw new Error('No credentials provided');
+          }
+          let userRef = await db.collection('users').where('email', '==', credentials.email).get();
+          if (userRef.empty) {
+            userRef = await db.collection('users').where('username', '==', credentials.email).get();
+            if (userRef.empty) {
+              throw new Error('No user found with the provided email/username');
+            }
+          }
           const user = userRef.docs[0].data();
+          if (!user.password) {
+            throw new Error('This account was registered with Google. Please use Google to sign in.');
+          }
+          const isValid = await verifyPassword(credentials.password, user.password);
+          if (!isValid) {
+            throw new Error('Incorrect password');
+          }
+          //console.log('Authorized user:', user);
           return {
             id: user.userid,
-            userid: user.userid,
             email: user.email,
             username: user.username,
             bio: user.bio,
@@ -37,54 +92,10 @@ export const authOptions: NextAuthOptions = {
             characters: user.characters,
             team: user.team,
           };
-        } else {
-          console.log("WHYYY");
-          throw new Error('User not found in database');
+        } catch (error) {
+          console.error('Error in CredentialsProvider authorize callback:', error);
+          throw error;
         }
-      },
-    }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials) {
-          throw new Error('No credentials provided');
-        }
-        let userRef = await db.collection('users').where('email', '==', credentials.email).get();
-        if (userRef.empty) {
-          userRef = await db.collection('users').where('username', '==', credentials.email).get();
-          if (userRef.empty) {
-            throw new Error('No user found with the provided email/username');
-          }
-        }
-        const user = userRef.docs[0].data();
-        if (!user.password) {
-          throw new Error('This account was registered with Google. Please use Google to sign in.');
-        }
-        const isValid = await verifyPassword(credentials.password, user.password);
-        if (!isValid) {
-          throw new Error('Incorrect password');
-        }
-
-        return {
-          userid: user.userid,
-          email: user.email,
-          username: user.username,
-          bio: user.bio,
-          profile: user.profile,
-          division: user.division,
-          specialties: user.specialties,
-          skill: user.skill,
-          coins: user.coins,
-          level: user.level,
-          xp: user.xp,
-          lessons: user.lessons,
-          characters: user.characters,
-          team: user.team,
-        };
       },
     }),
   ],
@@ -95,7 +106,10 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET as string,
   callbacks: {
     async session({ session, token }) {
-      session.user.userid = token.userid;
+      //console.log('Session callback:', { session, token });
+      session.user.id = token.id;
+      //console.log("WSP" + token.id);
+      session.user.userid = token.id;
       session.user.email = token.email;
       session.user.username = token.username;
       session.user.profile = token.profile;
@@ -112,8 +126,12 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async jwt({ token, user }) {
+      //console.log("JWT callback:", { token, user });
       if (user) {
-        token.userid = user.userid;
+       // console.log("pls?");
+        //console.log('JWT callback:', { token, user });
+        token.id = user.id || user.userid;
+        //console.log("HEY" + user.id || user.userid);
         token.email = user.email;
         token.username = user.username;
         token.profile = user.profile;

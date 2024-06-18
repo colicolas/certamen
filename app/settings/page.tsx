@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, getSession } from 'next-auth/react';
 import SideNavbar from '@/components/SideNavbar';
 import Input from '@/components/FormTextInput';
 import axios from 'axios';
@@ -27,10 +27,20 @@ const ProfilePage: React.FC = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put(`/api/user/${session.user.userid}`, {
+      const response = await axios.put(`/api/user/${session.user.id}`, {
         username,
         bio,
       });
+      const updatedUserData = response.data;
+      await update({
+        ...session,
+        user: {
+          ...session.user,
+          username: updatedUserData.username,
+          bio: updatedUserData.bio,
+        },
+      });
+
       setShowSavePrompt(false);
       setIsEditing(false);
     } catch (error) {
