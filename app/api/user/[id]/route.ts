@@ -41,7 +41,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
   const { id } = params;
   const body = await req.json();
-  const { username, bio } = body;
+  const { username, bio, division, specialties } = body;
 
   try {
     console.log(`Updating user with ID: ${id}`); // Log the ID being updated
@@ -57,7 +57,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ message: 'Username already exists' }, { status: 409 });
     }
 
-    const updatedUser = { username, bio };
+    const updatedUser = { username, bio, division, specialties };
 
     await db.collection('users').doc(id).update(updatedUser);
 
@@ -71,32 +71,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         ...token,
         username: updatedUserData?.username,
         bio: updatedUserData?.bio,
+        division: updatedUserData?.division,
+        specialties: updatedUserData?.specialties,
       },
       secret: process.env.NEXTAUTH_SECRET as string,
     });
-    /*if (session && session.user) {
-      session.user.username = updatedUserData?.username;
-      session.user.bio = updatedUserData?.bio;
-
-      const newToken = await encode({
-        ...authOptions.jwt,
-        token: {
-          ...token,
-          username: updatedUserData?.username,
-          bio: updatedUserData?.bio
-        },
-        secret: authOptions.secret,
-      });
-
-      return NextResponse.json(
-        {
-          user: updatedUserData,
-          token: newToken,
-        },
-        { status: 200 }
-      );
-    }*/
-    return NextResponse.json(updatedUserData, { status: 200 });
+   return NextResponse.json(updatedUserData, { status: 200 });
   } catch (error) {
     console.error('Error updating user data:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
