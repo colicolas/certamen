@@ -16,9 +16,12 @@
     "firebase": "^10.12.2",
     "firebase-admin": "^12.1.1",
     "font-awesome": "^4.7.0",
+    "fs": "^0.0.1-security",
     "glob": "^10.4.1",
+    "gray-matter": "^4.0.3",
     "next": "14.2.3",
     "next-auth": "^4.24.7",
+    "path": "^0.12.7",
     "react": "^18",
     "react-dom": "^18",
     "rimraf": "^5.0.7"

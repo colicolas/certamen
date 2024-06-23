@@ -15,16 +15,16 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   const { id } = params;
 
   try {
-    console.log(`Fetching user with ID: ${id}`); // Log the ID being fetched
+    //console.log(`Fetching user with ID: ${id}`); // Log the ID being fetched
     const userDoc = await db.collection('users').doc(id).get();
 
     if (!userDoc.exists) {
-      console.log(`User with ID ${id} not found`); // Log if the user is not found
+      //console.log(`User with ID ${id} not found`); // Log if the user is not found
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
 
     const user = userDoc.data();
-    console.log(`User data: ${JSON.stringify(user)}`); // Log the user data being returned
+    //console.log(`User data: ${JSON.stringify(user)}`); // Log the user data being returned
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
     console.error('Error fetching user data:', error);

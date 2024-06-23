@@ -1,17 +1,14 @@
-// components/StudyBox.tsx
 'use client';
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import axios from 'axios';
 
-interface StudyBoxProps {
+interface LessonStatusBoxProps {
   division: string;
   specialty: string;
   lessons: string[];
-  title?: string;
 }
 
-const StudyBox: React.FC<StudyBoxProps> = ({ division, specialty, lessons, title }) => {
+const LessonStatusBox: React.FC<LessonStatusBoxProps> = ({ division, specialty, lessons }) => {
   const [totalLessons, setTotalLessons] = useState<number>(0);
 
   useEffect(() => {
@@ -30,11 +27,10 @@ const StudyBox: React.FC<StudyBoxProps> = ({ division, specialty, lessons, title
   const completedLessons = lessons.filter(lesson => lesson.includes(`${division}/${specialty}/`) && lesson.endsWith('-complete')).length;
   const inProgressLessons = lessons.filter(lesson => lesson.includes(`${division}/${specialty}/`) && lesson.endsWith('-progress')).length;
   const unstartedLessons = totalLessons - completedLessons - inProgressLessons;
-  const displayTitle = title || `${specialty.charAt(0).toUpperCase() + specialty.slice(1)}`;
 
   return (
-    <Link href={`/study/${division}/${specialty}`} className="block border rounded p-6 m-4 bg-beige-200 shadow-md hover:bg-beige-300 text-lg font-semibold text-center transition-colors duration-300">
-      <div className="text-xl mb-4">{displayTitle}</div>
+    <div className="border rounded p-6 m-4 bg-gray-800 shadow-md text-lg font-semibold text-center">
+      <div className="text-xl mb-4">Lessons' Progress</div>
       <div className="flex justify-center mb-4">
         <div className="flex flex-col items-center mx-2">
           <div className="bg-indigo-300 text-black rounded-full w-12 h-12 flex items-center justify-center">{completedLessons}</div>
@@ -53,8 +49,8 @@ const StudyBox: React.FC<StudyBoxProps> = ({ division, specialty, lessons, title
         <div className="bg-indigo-300 h-2.5 rounded-l-full" style={{ width: `${(completedLessons / totalLessons) * 100}%` }}></div>
         <div className="bg-blue-500 h-2.5 rounded-r-full" style={{ width: `${(inProgressLessons / totalLessons) * 100}%` }}></div>
       </div>
-    </Link>
+    </div>
   );
 };
 
-export default StudyBox;
+export default LessonStatusBox;

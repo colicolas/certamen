@@ -13,16 +13,7 @@ const StudyPage: React.FC = () => {
   const [division, setDivision] = useState('');
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [lessons, setLessons] = useState<string[]>([]);
-  const totalLessons: { [key in Specialty]: number } = {
-    myth: 10,
-    history: 8,
-    literature: 12,
-    pmaq: 6,
-    vocab: 7,
-    grammar: 5,
-    culture: 9,
-  };
-  
+ 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -72,7 +63,7 @@ const StudyPage: React.FC = () => {
         {division && specialties.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-10 ml-20">
             {specialties.map((specialty) => (
-              <StudyBox key={specialty} division={division} specialty={specialty} lessons={lessons} totalLessons={totalLessons[specialty as Specialty]}/>
+              <StudyBox key={specialty} division={division} specialty={specialty} lessons={lessons}/>
             ))}
           </div>
         )}
