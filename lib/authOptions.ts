@@ -107,22 +107,22 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token }) {
       //console.log('Session callback:', { session, token });
-      session.user.id = token.id;
+      session.user.id = token.id as string;
       //console.log("WSP" + token.id);
-      session.user.userid = token.id;
-      session.user.email = token.email;
-      session.user.username = token.username;
-      session.user.profile = token.profile;
-      session.user.division = token.division;
-      session.user.specialties = token.specialties;
-      session.user.skill = token.skill;
-      session.user.coins = token.coins;
-      session.user.level = token.level;
-      session.user.xp = token.xp;
-      session.user.lessons = token.lessons;
-      session.user.characters = token.characters;
-      session.user.team = token.team;
-      session.user.bio = token.bio;
+      //session.user.userid = token.id as string;
+      session.user.email = token.email as string;
+      session.user.username = token.username as string;
+      session.user.profile = token.profile as string;
+      session.user.division = token.division as string;
+      session.user.specialties = token.specialties as string[];
+      session.user.skill = token.skill as number[];
+      session.user.coins = token.coins as number;
+      session.user.level = token.level as number;
+      session.user.xp = token.xp as number;
+      session.user.lessons = token.lessons as number[];
+      session.user.characters = token.characters as string[];
+      session.user.team = token.team as string[];
+      session.user.bio = token.bio as string;
       return session;
     },
     async jwt({ token, user }) {
@@ -130,7 +130,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
        // console.log("pls?");
         //console.log('JWT callback:', { token, user });
-        token.id = user.id || user.userid;
+        token.id = user.id; // || user.userid;
         //console.log("HEY" + user.id || user.userid);
         token.email = user.email;
         token.username = user.username;
