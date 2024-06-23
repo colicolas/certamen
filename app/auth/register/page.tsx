@@ -23,7 +23,7 @@ export default function Register() {
   const [coins, setCoins] = useState(0);
   const [level, setLevel] = useState(1);
   const [xp, setXp] = useState(0);
-  const [lessons, setLessons] = useState<number[]>([]);
+  const [lessons, setLessons] = useState<string[]>([]);
   const [characters, setCharacters] = useState<string[]>([]);
   const [team, setTeam] = useState<string[]>([]);
   const [bio, setBio] = useState("none yet!");

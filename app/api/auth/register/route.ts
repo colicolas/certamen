@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     coins: number;
     level: number;
     xp: number;
-    lessons: number[];
+    lessons: string[];
     characters: string[];
     team: string[];
     bio: string;
