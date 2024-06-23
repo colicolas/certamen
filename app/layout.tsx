@@ -20,6 +20,19 @@ export default function RootLayout({
   return (
     <>
       <html lang="en">
+        <head>
+          <meta charset="UTF-8"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+          <meta property="og:title" content="certamen."/>
+          <meta property="og:description" content="discite lucendo :)"/>
+          <meta property="og:url" content="https://certamen.vercel.app/"/>
+          <meta property="og:type" content="website"/>
+
+          <meta property="og:site_name" content="certamen."/>
+          <meta property="og:image:width" content="1200"/>
+          <meta property="og:image:height" content="630"/>
+        </head>
         <Providers>
           <body className={inter.className}>{children}</body>
         </Providers>

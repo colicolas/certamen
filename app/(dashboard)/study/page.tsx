@@ -36,6 +36,10 @@ const StudyPage: React.FC = () => {
           setDivision(userData.division);
           setSpecialties(userData.specialties);
           setLessons(userData.lessons || []);
+          /*setUsername(session.data.user.username);
+          setDivision(session.data.user.division);
+          setSpecialties(session.data.user.specialties);
+          setLessons(session.data.user.lessons);*/
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
