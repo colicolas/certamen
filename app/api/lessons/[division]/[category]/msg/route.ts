@@ -5,11 +5,14 @@ import path from 'path';
 import matter from 'gray-matter';
 
 export async function GET(req: NextRequest, { params }: { params: { division: string, category: string } }) {
-  const { division, category } = params;
+  let { division, category } = params;
 
   if (!division || !category) {
     return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
   }
+
+  division = division.toUpperCase();
+  category = category.toLowerCase();
 
   const filePath = path.join(process.cwd(), `lessons/${division}/${category}/msg.txt`);
   console.log(filePath);
