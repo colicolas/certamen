@@ -4,11 +4,14 @@ import fs from 'fs';
 import path from 'path';
 
 export async function GET(req: NextRequest, { params }: { params: { division: string, category: string } }) {
-  const { division, category } = params;
+  let { division, category } = params;
 
   if (!division || !category) {
     return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
   }
+
+  division = division.toUpperCase();
+  category = category.toLowerCase();
 
   const lessonsDir = path.join(process.cwd(), `lessons/${division}/${category}`);
   if (!fs.existsSync(lessonsDir)) {
