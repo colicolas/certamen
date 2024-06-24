@@ -34,10 +34,13 @@ export default function RootLayout({
           <meta property="og:image:width" content="1200"/>
           <meta property="og:image:height" content="630"/>
         </head>
-        <Providers>
-          <body className={inter.className}>{children}</body>
-        </Providers>
-        <SpeedInsights />
+
+        <body className={inter.className}>
+          <Providers>
+            {children}
+          </Providers>
+          <SpeedInsights />
+        </body>
       </html>
     </>
   );
