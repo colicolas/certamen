@@ -5,6 +5,7 @@ const inter = Inter({ subsets: ["latin"] });
 import Providers from "./providers";
 import '@fortawesome/fontawesome-svg-core/styles.css'; // Import the CSS manually
 import { config } from '@fortawesome/fontawesome-svg-core';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 config.autoAddCss = false; // Prevent Font Awesome from adding its CSS again
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default function RootLayout({
         <Providers>
           <body className={inter.className}>{children}</body>
         </Providers>
+        <SpeedInsights />
       </html>
     </>
   );
