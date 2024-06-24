@@ -26,10 +26,13 @@ const Header: React.FC<HeaderProps> = ({ division, category }) => {
 
     const fetchLessonsData = async () => {
       try {
-        const res = await axios.get(`/api/user/lessons`);
-        setLessons(res.data.lessons);
+        const session = await axios.get('/api/auth/session'); // Assuming you have an endpoint to get session data
+        if (session && session.data.user) {
+          const res = await axios.get(`/api/user/${session.data.user.id}`);
+          setLessons(res.data.lessons);
+        }
       } catch (error) {
-        console.error('Error fetching lessons data:', error);
+          console.error('Error fetching lessons data:', error);
       }
     };
 

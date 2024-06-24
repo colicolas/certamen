@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import axios from 'axios';
 import Link from 'next/link';
 import LessonHeader from '@/components/LessonHeader';
+import LessonLink from '@/components/LessonLink';
 
 interface LessonData {
   title: string;
@@ -66,6 +67,8 @@ const StudyCategoryPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-stone-100">
       <LessonHeader division={division} category={category} />
+      <br />
+      <br />
       <div className="p-8">
         <div className="relative">
           <div className="absolute left-1/2 transform -translate-x-1/2 h-full border-l-2 border-gray-300"></div>
@@ -73,17 +76,21 @@ const StudyCategoryPage: React.FC = () => {
             const status = getLessonStatus(index + 1);
             const isLeft = index % 2 === 0;
             return (
-              <div key={index} className={`mb-8 flex justify-${isLeft ? 'start' : 'end'} items-center w-full`}>
-                <div className="w-1/2 flex flex-col items-center">
-                  <div className={`relative flex items-center justify-center rounded-full w-10 h-10 ${status === 'complete' ? 'bg-indigo-300' : status === 'progress' ? 'bg-blue-500' : 'bg-gray-800'} cursor-pointer`} title={lesson.title}>
-                    {status !== 'unstarted' && <span className={`absolute inset-0 rounded-full ${status === 'complete' ? 'bg-indigo-300' : 'bg-blue-500'}`}></span>}
-                    <Link href={`/study/${division}/${category}/${index + 1}`} className="text-white">{index + 1}</Link>
-                  </div>
-                  <div className="mt-2 text-center">
-                    <h3 className="text-lg font-semibold">{lesson.title}</h3>
-                    <p className="text-sm">{lesson.frequency}</p>
-                    <p className="text-sm">{lesson.description}</p>
-                  </div>
+              <div key={index} className={`mb-8 flex justify-center items-center w-full`}>
+                <div className={`w-1/2 flex flex-col items-${isLeft ? 'end' : 'start'} pr-${isLeft ? 8 : 0} pl-${isLeft ? 0 : 8}`}>
+                  <LessonLink
+                    division={division}
+                    category={category}
+                    lessonNumber={index + 1}
+                    title={lesson.title}
+                    frequency={lesson.frequency}
+                    description={lesson.description}
+                    status={status}
+                    isLeft={isLeft}
+                  />
+                </div>
+                <div className="absolute left-1/2 transform -translate-x-1/2 w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center">
+                  <span className={`block w-2 h-2 rounded-full ${status === 'complete' ? 'bg-indigo-300' : status === 'progress' ? 'bg-blue-500' : 'bg-gray-800'}`}></span>
                 </div>
               </div>
             );

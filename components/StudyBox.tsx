@@ -33,7 +33,7 @@ const StudyBox: React.FC<StudyBoxProps> = ({ division, specialty, lessons, title
   const displayTitle = title || `${specialty.charAt(0).toUpperCase() + specialty.slice(1)}`;
 
   return (
-    <Link href={`/study/${division}/${specialty}`} className="block border rounded p-6 m-4 bg-beige-200 shadow-md hover:bg-beige-300 text-lg font-semibold text-center transition-colors duration-300">
+    <Link href={`/study/${division}/${specialty}`} className="block border rounded p-6 bg-beige-200 shadow-md hover:bg-beige-300 text-lg font-semibold text-center transition-colors duration-300">
       <div className="text-xl mb-4">{displayTitle}</div>
       <div className="flex justify-center mb-4">
         <div className="flex flex-col items-center mx-2">

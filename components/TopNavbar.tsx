@@ -24,7 +24,7 @@ const TopNavbar = () => {
   ];
 
   return (
-    <>
+    <div className="z-50">
       {showNavbar ? (
         <nav
           ref={navRef}
@@ -59,7 +59,7 @@ const TopNavbar = () => {
           <FontAwesomeIcon icon={faChevronDown} />
         </button>
       )}
-    </>
+    </div>
   );
 };
 
