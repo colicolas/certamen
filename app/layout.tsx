@@ -34,7 +34,6 @@ export default function RootLayout({
           <meta property="og:image:width" content="1200"/>
           <meta property="og:image:height" content="630"/>
         </head>
-
         <body className={inter.className}>
           <Providers>
             {children}

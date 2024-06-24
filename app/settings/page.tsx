@@ -135,7 +135,9 @@ const ProfilePage: React.FC = () => {
                     id="division"
                     value={division}
                     onChange={(e) => setDivision(e.target.value)}
-                    className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:shadow-outline ${!isEditing ? 'cursor-not-allowed bg-beige-200' : 'bg-white'}`}
+                    className={`z-0 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                      !isEditing ? 'cursor-not-allowed bg-beige-200' : 'bg-white'
+                    }`}
                     disabled={!isEditing}
                   >
                     <option value="" disabled>Select your division</option>

@@ -4,11 +4,14 @@ import path from 'path';
 import matter from 'gray-matter';
 
 export async function GET(req: NextRequest, { params }: { params: { division: string, category: string, lesson: string } }) {
-  const { division, category, lesson } = params;
+  let { division, category, lesson } = params;
 
   if (!division || !category || !lesson) {
     return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
   }
+
+  division = division.toUpperCase();
+  category = category.toLowerCase();
 
   const filePath = path.join(process.cwd(), `lessons/${division}/${category}/${lesson}.md`);
   console.log(filePath);
