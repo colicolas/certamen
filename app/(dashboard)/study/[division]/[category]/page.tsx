@@ -17,7 +17,10 @@ interface LessonData {
 }
 
 const StudyCategoryPage: React.FC = () => {
-  const { division, category } = useParams();
+  let { division, category } = useParams();
+  division = Array.isArray(division) ? division[0] : division;
+  category = Array.isArray(category) ? category[0] : category;
+
   const [lessons, setLessons] = useState<LessonData[]>([]);
   const [userLessons, setUserLessons] = useState<string[]>([]);
 
