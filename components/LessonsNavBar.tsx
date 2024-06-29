@@ -73,12 +73,14 @@ const LessonsNavBar: React.FC = () => {
 
   return (
     <div className="relative">
+      {!isVisible &&
       <button
         onClick={() => setIsVisible(!isVisible)}
-        className="absolute top-4 left-4 z-50 p-2 bg-white rounded-md shadow-md"
+        className="fixed top-4 left-4 z-50 p-2 bg-white rounded-md shadow-md"
       >
         <FontAwesomeIcon icon={faBars} />
       </button>
+      }
       {isVisible && (
         <div className="h-screen w-64 bg-beige-200 shadow-lg p-4 fixed border-r border-gray-300">
           <div className="mb-4">

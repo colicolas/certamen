@@ -14,6 +14,8 @@ const StudyLessonPage: React.FC = () => {
   const [content, setContent] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
+  const [frequency, setFrequency] = useState<string>('');
+  const [author, setAuthor] = useState<string>('');
 
   useEffect(() => {
     const fetchLesson = async () => {
@@ -22,6 +24,10 @@ const StudyLessonPage: React.FC = () => {
         const parsed = matter(res.data);
         setTitle(parsed.data.title);
         setDescription(parsed.data.description);
+        setFrequency(parsed.data.frequency);
+        console.log(frequency);
+        setAuthor(parsed.data.author);
+        console.log(author);
         setContent(parsed.content);
       } catch (error) {
         console.error('Error fetching lesson:', error);
@@ -31,12 +37,27 @@ const StudyLessonPage: React.FC = () => {
     fetchLesson();
   }, [division, category, lesson]);
 
+  const getFrequencyClass = (frequency: string) => {
+    switch (frequency.toLowerCase()) {
+      case 'high':
+        return 'text-fuchsia-500';
+      case 'medium':
+        return 'text-blue-500';
+      case 'low':
+        return 'text-purple-500';
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className="flex">
       <DynamicLessonsNavBar />
       <div className="flex-1 p-4 ml-72">
-        <h1 className="text-4xl font-bold mb-4 mt-12">{title}</h1>
-        <p className="text-lg mb-4">{description}</p>
+        {frequency && <p className={`text-md mt-12 mb-2 ${getFrequencyClass(frequency)}`}>Frequency: {frequency}</p>}
+        <h1 className="text-4xl font-bold mb-4">{title}</h1>
+        {author && <p className="text-md mb-4 text-gray-600">Author(s): {author}</p>}
+        <p className="italic text-md mb-4">{description}</p>
         <div className="border border-gray-300 rounded-md p-4 mb-8 w-5/12">
           <TableOfContents content={content} />
         </div>
@@ -51,6 +72,9 @@ const StudyLessonPage: React.FC = () => {
             {content}
           </Markdown>
         </div>
+        <br />
+        <br />
+        <br />
       </div>
     </div>
   );
