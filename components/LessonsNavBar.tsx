@@ -29,13 +29,13 @@ const LessonsNavBar: React.FC = () => {
       }
 
       try {
-        const lessonsRes = await axios.get(`/api/lessons/${division}/${category}`);
+        const lessonsRes = await axios.get(`/api/lessons/${(division as string).toUpperCase()}/${(category as string).toLowerCase()}`);
         const { totalLessons, lessonFiles } = lessonsRes.data;
 
         const lessonNames = await Promise.all(
           lessonFiles.map(async (file: string) => {
             try {
-              const res = await axios.get(`/lessons/${division}/${category}/${file}`);
+              const res = await axios.get(`/lessons/${(division as string).toUpperCase()}/${(category as string).toLowerCase()}/${file}`);
               const content = res.data;
               const { data } = matter(content);
               return data.title || file; // Use the title if available, otherwise use the file name
