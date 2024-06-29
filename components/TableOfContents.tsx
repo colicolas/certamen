@@ -29,7 +29,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => {
         {headers.map(header => (
           <li key={uuidv4()} className={`ml-${(header.level - 1) * 4} mb-2 relative`}>
             <span className="absolute -left-4 border-l border-gray-300 h-full" />
-            <Link href={`/study/${division}/${category}/${lesson}#${header.id}`} className="transition duration-300 text-gray-800 hover:text-gray-600 hover:underline">
+            <Link href={`/study/${division.toUpperCase()}/${category.toLowerCase()}/${lesson}#${header.id}`} className="transition duration-300 text-gray-800 hover:text-gray-600 hover:underline">
               {header.text}
             </Link>
           </li>
