@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession, getSession, signIn } from 'next-auth/react';
 import SideNavbar from '@/components/SideNavbar';
 import Input from '@/components/FormTextInput';
+import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import axios from 'axios';
 import FormButton from '@/components/FormButton';
@@ -130,15 +131,15 @@ const ProfilePage: React.FC = () => {
                   className={!isEditing ? 'cursor-not-allowed' : ''}
                 />
                 <div className="mb-4">
-                  <label htmlFor="division" className="block text-gray-700 text-xs font-bold mb-2 uppercase">Certamen Division</label>
+                  <label htmlFor="division" className="block text-xs font-bold mb-2 uppercase">Certamen Division</label>
                   <select
                     id="division"
+                    disabled={!isEditing}
                     value={division}
                     onChange={(e) => setDivision(e.target.value)}
                     className={`z-0 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                      !isEditing ? 'cursor-not-allowed bg-beige-200' : 'bg-white'
+                      !isEditing ? 'cursor-not-allowed !important disabled:bg-beige-200 disabled:text-gray-700' : ''
                     }`}
-                    disabled={!isEditing}
                   >
                     <option value="" disabled>Select your division</option>
                     <option value="MS1">MS1</option>
@@ -150,6 +151,7 @@ const ProfilePage: React.FC = () => {
                     <option value="Advanced">Advanced (HS4+)</option>
                   </select>
                 </div>
+
                 <div className="mb-4">
                   <label className="block text-gray-700 text-xs font-bold mb-2 uppercase">Specialties</label>
                   <div className="flex flex-wrap">
@@ -215,6 +217,7 @@ const ProfilePage: React.FC = () => {
           onCancel={() => setShowSavePrompt(false)}
         />
       )}
+
     </div>
   );
 };
