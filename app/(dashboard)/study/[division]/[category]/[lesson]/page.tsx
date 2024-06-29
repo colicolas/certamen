@@ -25,9 +25,7 @@ const StudyLessonPage: React.FC = () => {
         setTitle(parsed.data.title);
         setDescription(parsed.data.description);
         setFrequency(parsed.data.frequency);
-        console.log(frequency);
         setAuthor(parsed.data.author);
-        console.log(author);
         setContent(parsed.content);
       } catch (error) {
         console.error('Error fetching lesson:', error);
