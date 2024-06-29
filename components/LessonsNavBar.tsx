@@ -46,7 +46,7 @@ const LessonsNavBar: React.FC = () => {
           })
         );
 
-        const lessonsData = Array.from({ length: totalLessons }, (_, i) => ({
+        const lessonsData: LessonStatus[] = Array.from({ length: totalLessons }, (_, i) => ({
           number: i + 1,
           name: lessonNames[i],
           status: getLessonStatus(userData.lessons, division as string, category as string, i + 1),
@@ -90,7 +90,7 @@ const LessonsNavBar: React.FC = () => {
             </button>
             <h2 className="text-xl font-bold">
               <Link href={`/study/${division}/${category}`} className="hover:underline">
-                {division.toUpperCase()}: {category.charAt(0).toUpperCase() + category.slice(1)}
+                {(division as string).toUpperCase()}: {(category as string).charAt(0).toUpperCase() + (category as string).slice(1)}
               </Link>
             </h2>
           </div>

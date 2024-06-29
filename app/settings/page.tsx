@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useSession, getSession, signIn } from 'next-auth/react';
 import SideNavbar from '@/components/SideNavbar';
 import Input from '@/components/FormTextInput';
-import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import axios from 'axios';
 import FormButton from '@/components/FormButton';
