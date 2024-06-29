@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params }: { params: { division: st
   division = division.toUpperCase();
   category = category.toLowerCase();
 
-  const lessonsDir = path.join(process.cwd(), `lessons/${division}/${category}`);
+  const lessonsDir = path.join(process.cwd(), `public/lessons/${division}/${category}`);
   if (!fs.existsSync(lessonsDir)) {
     return NextResponse.json({ error: 'Category not found' }, { status: 404 });
   }
