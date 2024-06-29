@@ -89,7 +89,7 @@ const LessonsNavBar: React.FC = () => {
               <FontAwesomeIcon icon={faBars} />
             </button>
             <h2 className="text-xl font-bold">
-              <Link href={`/study/${division}/${category}`} className="hover:underline">
+              <Link href={`/study/${division}/${category}`} className="transition duration-300 hover:text-gray-700">
                 {(division as string).toUpperCase()}: {(category as string).charAt(0).toUpperCase() + (category as string).slice(1)}
               </Link>
             </h2>
@@ -120,7 +120,7 @@ const LessonsNavBar: React.FC = () => {
                 >
                   <Link
                     href={`/study/${division}/${category}/${lesson.number}`}
-                    className={`block p-2 ${pathname.endsWith(`/${lesson.number}`) ? 'font-bold' : ''} hover:underline`}
+                    className={`block p-2 ${pathname.endsWith(`/${lesson.number}`) ? 'font-bold' : ''} transition duration-300 hover:opacity-75`}
                   >
                     {lesson.name}
                   </Link>
