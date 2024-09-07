@@ -47,6 +47,7 @@ const StudyCategoryPage: React.FC = () => {
   const categoryParam = Array.isArray(category) ? category[0] : category;
 
   const lessonsCache = queryClient.getQueryData(['lessonsData', divisionParam, categoryParam]);
+  console.log("lessonsCache: ", lessonsCache);
   const userLessonsCache = queryClient.getQueryData(['userLessons']);
 
   const { data: userLessons, isLoading: userLoading } = useQuery({
@@ -57,15 +58,16 @@ const StudyCategoryPage: React.FC = () => {
     initialData: userLessonsCache as string[],  // Use cached data if available
   });
 
-  const { data: lessons, isLoading: lessonsLoading } = useQuery({
+  const { data: lessons=[], isLoading: lessonsLoading } = useQuery({
     queryKey: ['lessonsData', divisionParam, categoryParam],
     queryFn: () => fetchLessonsData(divisionParam as string, categoryParam as string),
     staleTime: 5 * 60 * 1000,
     refetchInterval: 10 * 60 * 1000,
     enabled: !!divisionParam && !!categoryParam,
-    initialData: lessonsCache,
+    initialData: lessonsCache !== undefined ? lessonsCache as string[] : undefined,
   });
   
+  console.log('lessonsCache:', lessonsCache);
   console.log('userLessons:', userLessons);
   console.log('userLoading:', userLoading);
   console.log('lessons:', lessons);
