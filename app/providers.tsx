@@ -16,7 +16,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 10 * 60 * 1000, // 10 minutes
+      refetchInterval: 10 * 60 * 1000, // 10 minutes
       refetchOnWindowFocus: false,
     },
   },
@@ -52,7 +52,7 @@ export default function Providers({ children }: ProvidersProps) {
   }, []);
   
   return (
-    <QueryClientProvider client={queryClient} contextSharing={true}> 
+    <QueryClientProvider client={queryClient}> 
       <SessionProvider>
         <UserProvider>
           {children}

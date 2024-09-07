@@ -12,15 +12,15 @@ interface HeaderProps {
 }
 
 // Fetch message from the API
-const fetchMessage = async (division: string, category: string) => {
+const fetchMessage = async (division: string, category: string): Promise<string> => {
   const res = await axios.get(`/api/lessons/${division}/${category}/msg`);
   return res.data.content;
 };
 
 // Fetch lessons data from the API
-const fetchLessonsData = async () => {
+const fetchLessonsData = async (): Promise<string[]> => {
   const session = await axios.get('/api/auth/session');
-  if (session && session.data.user) {
+  if (session?.data?.user) {
     const res = await axios.get(`/api/user/${session.data.user.id}`);
     return res.data.lessons || [];
   }
@@ -30,42 +30,22 @@ const fetchLessonsData = async () => {
 const Header: React.FC<HeaderProps> = ({ division, category }) => {
   const queryClient = useQueryClient();
 
-  const messageCache = queryClient.getQueryData(['lessonMessage', division, category]);
-  const lessonsCache = queryClient.getQueryData('userLessons');
-  
-  const { data: message, isLoading: messageLoading } = useQuery({
+  const messageCache = queryClient.getQueryData<string>(['lessonMessage', division, category]);
+  const lessonsCache = queryClient.getQueryData<string[]>(['userLessons']);
+
+  const { data: message='', isLoading: messageLoading } = useQuery({
     queryKey: ['lessonMessage', division, category],
     queryFn: () => fetchMessage(division, category),
     staleTime: 5 * 60 * 1000,  // Cache for 5 minutes
     initialData: messageCache,  // Use cached message if available
-    onSuccess: (data) => {
-      console.log('Message fetched successfully:', data);
-    },
-    onSettled: (data, error) => {
-      if (error) {
-        console.error('Error fetching message:', error);
-      } else {
-        console.log('Message query settled:', data);
-      }
-    }
   });
 
   // Query for the lessons, using the cache if available
-  const { data: lessons, isLoading: lessonsLoading } = useQuery({
+  const { data: lessons=[], isLoading: lessonsLoading } = useQuery({
     queryKey: ['userLessons'],
     queryFn: fetchLessonsData,
     staleTime: 5 * 60 * 1000,  // Cache for 5 minutes
     initialData: lessonsCache,  // Use cached lessons if available
-    onSuccess: (data) => {
-      console.log('Lessons fetched successfully:', data);
-    },
-    onSettled: (data, error) => {
-      if (error) {
-        console.error('Error fetching lessons:', error);
-      } else {
-        console.log('Lessons query settled:', data);
-      }
-    }
   });
 
   if (messageLoading || lessonsLoading) return <div>Loading...</div>;

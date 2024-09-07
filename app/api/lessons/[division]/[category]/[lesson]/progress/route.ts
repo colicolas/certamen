@@ -16,6 +16,10 @@ export async function PUT(req: NextRequest, { params }: { params: { division: st
 
   const userId = token.sub; // Get the user ID from the token
 
+  if (!userId) {
+    return NextResponse.json({ message: 'User ID not found' }, { status: 400 });
+  }
+
   try {
     console.log(`Updating progress for user ${userId}, lesson ${lesson} in ${division}/${category}`);
 

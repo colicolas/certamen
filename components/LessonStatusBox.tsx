@@ -28,25 +28,20 @@ const LessonStatusBox: React.FC<LessonStatusBoxProps> = ({ division, specialty, 
     queryFn: () => fetchTotalLessons(division, specialty),
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
     initialData: totalLessonsCache, // Use cached data if available
-    onSuccess: (data) => {
-      console.log('Total lessons fetched successfully:', data);
-    },
-    onSettled: (data, error) => {
-      if (error) {
-        console.error('Error fetching total lessons:', error);
-      } else {
-        console.log('Total lessons query settled:', data);
-      }
-    },
   });
 
   if (isLoading) {
     return <div>Loading lessons status...</div>;
   }
 
+  const totalLessonsCount = typeof totalLessons === 'number' ? totalLessons : 0;
+
   const completedLessons = lessons.filter(lesson => lesson.includes(`${division}/${specialty}/`) && lesson.endsWith('-complete')).length;
   const inProgressLessons = lessons.filter(lesson => lesson.includes(`${division}/${specialty}/`) && lesson.endsWith('-progress')).length;
-  const unstartedLessons = totalLessons - completedLessons - inProgressLessons;
+  const unstartedLessons = totalLessonsCount - completedLessons - inProgressLessons;
+
+  const completedPercentage = totalLessonsCount > 0 ? (completedLessons / totalLessonsCount) * 100 : 0;
+  const inProgressPercentage = totalLessonsCount > 0 ? (inProgressLessons / totalLessonsCount) * 100 : 0;
 
   return (
     <div className="border rounded p-6 m-4 bg-gray-800 shadow-md text-lg font-semibold text-center">
@@ -66,8 +61,8 @@ const LessonStatusBox: React.FC<LessonStatusBoxProps> = ({ division, specialty, 
         </div>
       </div>
       <div className="w-full bg-gray-300 rounded-full h-2.5">
-        <div className="bg-indigo-300 h-2.5 rounded-l-full" style={{ width: `${(completedLessons / totalLessons) * 100}%` }}></div>
-        <div className="bg-blue-500 h-2.5 rounded-r-full" style={{ width: `${(inProgressLessons / totalLessons) * 100}%` }}></div>
+        <div className="bg-indigo-300 h-2.5 rounded-l-full" style={{ width: `${(completedLessons / totalLessonsCount) * 100}%` }}></div>
+        <div className="bg-blue-500 h-2.5 rounded-r-full" style={{ width: `${(inProgressLessons / totalLessonsCount) * 100}%` }}></div>
       </div>
     </div>
   );

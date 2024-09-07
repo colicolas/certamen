@@ -54,21 +54,15 @@ const StudyCategoryPage: React.FC = () => {
     queryFn: fetchUserData,
     staleTime: 5 * 60 * 1000,  // Cache stays fresh for 5 minutes
     refetchInterval: 10 * 60 * 1000, // Cache is kept for 10 minutes after last use
-    initialData: userLessonsCache,  // Use cached data if available
+    initialData: userLessonsCache as string[],  // Use cached data if available
   });
 
   const { data: lessons, isLoading: lessonsLoading } = useQuery({
     queryKey: ['lessonsData', divisionParam, categoryParam],
     queryFn: () => fetchLessonsData(divisionParam as string, categoryParam as string),
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    refetchInterval: 10 * 60 * 1000,
     enabled: !!divisionParam && !!categoryParam,
-    onSuccess: (data) => {
-      console.log('Data fetched or from cache:', data);
-    },
-    onSettled: (data, error) => {
-      console.log('Cache settled:', data, error);
-    },
     initialData: lessonsCache,
   });
   
@@ -81,8 +75,8 @@ const StudyCategoryPage: React.FC = () => {
 
   const getLessonStatus = (lessonNumber: number) => {
     const lessonPath = `${division}/${category}/${lessonNumber}`;
-    if (userLessons.includes(`${lessonPath}-complete`)) return 'complete';
-    if (userLessons.includes(`${lessonPath}-progress`)) return 'progress';
+    if (userLessons?.includes(`${lessonPath}-complete`)) return 'complete';
+    if (userLessons?.includes(`${lessonPath}-progress`)) return 'progress';
     return 'unstarted';
   };
 
