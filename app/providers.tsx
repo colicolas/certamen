@@ -28,16 +28,24 @@ export default function Providers({ children }: ProvidersProps) {
   useEffect(() => {
     console.log("GOOD MORNING");
     if (typeof window !== 'undefined') {
-      const persister = createSyncStoragePersister({
+      const localStoragePersister = createSyncStoragePersister({
         storage: window.localStorage,
+        key: 'reactQuery',
       });
 
-      console.log("hi");
       persistQueryClient({
         queryClient,
-        persister,
+        persister: localStoragePersister,
+        maxAge: 24 * 60 * 60 * 1000, // Cache will persist for 24 hours in localStorage
       });
       console.log("cheng gong");
+
+      const persistedData = localStorage.getItem('reactQuery');
+      console.log('Persisted data in localStorage:', persistedData);
+
+      // Log the cache at hydration
+      const cache = queryClient.getQueryCache().getAll();
+      console.log('Cache at hydration:', cache);
     } else {
       console.log("WHY??");
     }

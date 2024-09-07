@@ -5,7 +5,8 @@ import { useParams } from 'next/navigation';
 import axios from 'axios';
 import LessonHeader from '@/components/LessonHeader';
 import LessonLink from '@/components/LessonLink';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {useEffect} from 'react';
 
 interface LessonData {
   title: string;
@@ -41,26 +42,48 @@ const fetchLessonsData = async (division: string, category: string) => {
 
 const StudyCategoryPage: React.FC = () => {
   const { division, category } = useParams();
+  const queryClient = useQueryClient();
   const divisionParam = Array.isArray(division) ? division[0] : division;
   const categoryParam = Array.isArray(category) ? category[0] : category;
+
+  const lessonsCache = queryClient.getQueryData(['lessonsData', divisionParam, categoryParam]);
+  const userLessonsCache = queryClient.getQueryData(['userLessons']);
 
   const { data: userLessons, isLoading: userLoading } = useQuery({
     queryKey: ['userLessons'],
     queryFn: fetchUserData,
+    staleTime: 5 * 60 * 1000,  // Cache stays fresh for 5 minutes
+    cacheTime: 10 * 60 * 1000, // Cache is kept for 10 minutes after last use
+    initialData: userLessonsCache,  // Use cached data if available
+    onSuccess: (data) => {
+      console.log('Using cached or fetched userLessons:', data);
+    },
+    onSettled: (data, error) => {
+      console.log('Cache settled for userLessons:', data, error);
+    },
   });
 
   const { data: lessons, isLoading: lessonsLoading } = useQuery({
     queryKey: ['lessonsData', divisionParam, categoryParam],
     queryFn: () => fetchLessonsData(divisionParam as string, categoryParam as string),
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
     enabled: !!divisionParam && !!categoryParam,
+    onSuccess: (data) => {
+      console.log('Data fetched or from cache:', data);
+    },
+    onSettled: (data, error) => {
+      console.log('Cache settled:', data, error);
+    },
+    initialData: lessonsCache,
   });
+  
   console.log('userLessons:', userLessons);
   console.log('userLoading:', userLoading);
   console.log('lessons:', lessons);
   console.log('lessonsLoading:', lessonsLoading);
 
   if (userLoading || lessonsLoading || !lessons) return <div>Loading...</div>;
-  //if (userLoading || lessonsLoading) return <div>Loading...</div>;
 
   const getLessonStatus = (lessonNumber: number) => {
     const lessonPath = `${division}/${category}/${lessonNumber}`;

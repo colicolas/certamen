@@ -6,7 +6,7 @@ import axios from 'axios';
 import matter from 'gray-matter';
 import Markdown from 'markdown-to-jsx';
 import TableOfContents from '@/components/TableOfContents';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const DynamicLessonsNavBar = dynamic(() => import('@/components/LessonsNavBar'), { ssr: false });
 
@@ -28,11 +28,11 @@ const StudyLessonPage: React.FC = () => {
   const categoryParam = Array.isArray(category) ? category[0] : category;
   const lessonParam = Array.isArray(lesson) ? lesson[0] : lesson;
 
-  const { data, isLoading } = useQuery(
-    ['lessonData', divisionParam, categoryParam, lessonParam],
-    () => fetchLesson(divisionParam as string, categoryParam as string, lessonParam as string),
-    { enabled: !!divisionParam && !!categoryParam && !!lessonParam }
-  );
+  const { data, isLoading } = useQuery({
+    queryKey: ['lessonData', divisionParam, categoryParam, lessonParam],
+    queryFn: () => fetchLesson(divisionParam as string, categoryParam as string, lessonParam as string),
+    enabled: !!divisionParam && !!categoryParam && !!lessonParam,  // Enable query when params are available
+  });
 
   if (isLoading) return <div>Loading...</div>;
 
