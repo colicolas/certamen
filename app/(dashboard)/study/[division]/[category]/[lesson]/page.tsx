@@ -7,6 +7,8 @@ import matter from 'gray-matter';
 import Markdown from 'markdown-to-jsx';
 import TableOfContents from '@/components/TableOfContents';
 import { useQuery } from '@tanstack/react-query';
+import PrevButton from '@/components/PrevButton';
+import NextButton from '@/components/NextButton';
 
 const DynamicLessonsNavBar = dynamic(() => import('@/components/LessonsNavBar'), { ssr: false });
 
@@ -27,6 +29,8 @@ const StudyLessonPage: React.FC = () => {
   const divisionParam = Array.isArray(division) ? division[0] : division;
   const categoryParam = Array.isArray(category) ? category[0] : category;
   const lessonParam = Array.isArray(lesson) ? lesson[0] : lesson;
+  const currentLessonNumber = parseInt(lessonParam as string, 10);
+  const totalLessons = 5;
 
   const { data, isLoading } = useQuery({
     queryKey: ['lessonData', divisionParam, categoryParam, lessonParam],
@@ -35,6 +39,8 @@ const StudyLessonPage: React.FC = () => {
   });
 
   if (isLoading) return <div>Loading...</div>;
+
+  if (!data) return <div>No data available</div>;
 
   const { title, description, frequency, author, content } = data;
 
@@ -55,6 +61,10 @@ const StudyLessonPage: React.FC = () => {
     <div className="flex">
       <DynamicLessonsNavBar />
       <div className="flex-1 p-4 ml-72">
+        <div className="flex justify-between mb-4">
+          <PrevButton currentLessonNumber={currentLessonNumber} division={divisionParam} category={categoryParam} />
+          <NextButton currentLessonNumber={currentLessonNumber} division={divisionParam} category={categoryParam} totalLessons={totalLessons} />
+        </div>
         {frequency && <p className={`text-md mt-12 mb-2 ${getFrequencyClass(frequency)}`}>Frequency: {frequency}</p>}
         <h1 className="text-4xl font-bold mb-4">{title}</h1>
         {author && <p className="text-md mb-4 text-gray-600">Author(s): {author}</p>}

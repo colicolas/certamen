@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import matter from 'gray-matter';
 import { useQuery } from '@tanstack/react-query';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 interface LessonStatus {
   number: number;
@@ -93,8 +94,9 @@ const LessonsNavBar: React.FC = () => {
               <FontAwesomeIcon icon={faBars} />
             </button>
             <h2 className="text-xl font-bold">
-              <Link href={`/study/${division}/${category}`} className="transition duration-300 hover:text-gray-700">
-                {(division as string).toUpperCase()}: {(category as string).charAt(0).toUpperCase() + (category as string).slice(1)}
+              <Link href={`/study/${division}/${category}`} className="transition duration-300 hover:opacity-70">
+              <FontAwesomeIcon icon={faArrowLeft} /> {" "}{" "}
+                 {(division as string).toUpperCase()}: {(category as string).charAt(0).toUpperCase() + (category as string).slice(1)}
               </Link>
             </h2>
           </div>

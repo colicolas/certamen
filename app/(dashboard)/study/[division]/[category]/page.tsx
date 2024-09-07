@@ -53,14 +53,8 @@ const StudyCategoryPage: React.FC = () => {
     queryKey: ['userLessons'],
     queryFn: fetchUserData,
     staleTime: 5 * 60 * 1000,  // Cache stays fresh for 5 minutes
-    cacheTime: 10 * 60 * 1000, // Cache is kept for 10 minutes after last use
+    refetchInterval: 10 * 60 * 1000, // Cache is kept for 10 minutes after last use
     initialData: userLessonsCache,  // Use cached data if available
-    onSuccess: (data) => {
-      console.log('Using cached or fetched userLessons:', data);
-    },
-    onSettled: (data, error) => {
-      console.log('Cache settled for userLessons:', data, error);
-    },
   });
 
   const { data: lessons, isLoading: lessonsLoading } = useQuery({
