@@ -6,6 +6,8 @@ import Providers from "./providers";
 import '@fortawesome/fontawesome-svg-core/styles.css'; // Import the CSS manually
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import TestComponent from '@/components/TestComponent';
+
 config.autoAddCss = false; // Prevent Font Awesome from adding its CSS again
 
 export const metadata: Metadata = {
