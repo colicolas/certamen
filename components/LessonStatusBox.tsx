@@ -4,28 +4,27 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
 interface LessonStatusBoxProps {
-  division: string;
   specialty: string;
   lessons: string[];
 }
 
 // Fetch the total number of lessons for the given division and specialty
-const fetchTotalLessons = async (division: string, specialty: string) => {
-  const res = await axios.get(`/api/lessons/${division}/${specialty}`);
+const fetchTotalLessons = async (specialty: string) => {
+  const res = await axios.get(`/api/lessons/${specialty}`);
   return res.data.totalLessons;
 };
 
-const LessonStatusBox: React.FC<LessonStatusBoxProps> = ({ division, specialty, lessons }) => {
+const LessonStatusBox: React.FC<LessonStatusBoxProps> = ({ specialty, lessons }) => {
   const queryClient = useQueryClient();
 
   // Get cached total lessons if it exists
-  const totalLessonsCache = queryClient.getQueryData(['totalLessons', division, specialty]);
+  const totalLessonsCache = queryClient.getQueryData(['totalLessons', specialty]);
   console.log('Total lessons cache before query:', totalLessonsCache);
 
   // Query to fetch the total number of lessons, using the cache if available
   const { data: totalLessons = 0, isLoading } = useQuery({
-    queryKey: ['totalLessons', division, specialty],
-    queryFn: () => fetchTotalLessons(division, specialty),
+    queryKey: ['totalLessons', specialty],
+    queryFn: () => fetchTotalLessons(specialty),
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
     initialData: totalLessonsCache, // Use cached data if available
   });
@@ -36,8 +35,8 @@ const LessonStatusBox: React.FC<LessonStatusBoxProps> = ({ division, specialty, 
 
   const totalLessonsCount = typeof totalLessons === 'number' ? totalLessons : 0;
 
-  const completedLessons = lessons.filter(lesson => lesson.includes(`${division}/${specialty}/`) && lesson.endsWith('-complete')).length;
-  const inProgressLessons = lessons.filter(lesson => lesson.includes(`${division}/${specialty}/`) && lesson.endsWith('-progress')).length;
+  const completedLessons = lessons.filter(lesson => lesson.includes(`${specialty}/`) && lesson.endsWith('-complete')).length;
+  const inProgressLessons = lessons.filter(lesson => lesson.includes(`${specialty}/`) && lesson.endsWith('-progress')).length;
   const unstartedLessons = totalLessonsCount - completedLessons - inProgressLessons;
 
   const completedPercentage = totalLessonsCount > 0 ? (completedLessons / totalLessonsCount) * 100 : 0;

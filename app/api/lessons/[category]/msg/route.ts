@@ -4,17 +4,16 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
-export async function GET(req: NextRequest, { params }: { params: { division: string, category: string } }) {
-  let { division, category } = params;
+export async function GET(req: NextRequest, { params }: { params: { category: string } }) {
+  let { category } = params;
 
-  if (!division || !category) {
+  if (!category) {
     return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
   }
 
-  division = division.toUpperCase();
   category = category.toLowerCase();
 
-  const filePath = path.join(process.cwd(), `public/lessons/${division}/${category}/msg.txt`);
+  const filePath = path.join(process.cwd(), `public/lessons/${category}/msg.txt`);
   console.log(filePath);
   if (!fs.existsSync(filePath)) {
     return NextResponse.json({ error: 'Message not found' }, { status: 404 });

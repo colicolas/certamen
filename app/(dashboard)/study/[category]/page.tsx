@@ -1,4 +1,4 @@
-// app/study/[division]/[category]/page.tsx
+// app/study/[category]/page.tsx
 'use client';
 
 import { useParams } from 'next/navigation';
@@ -25,14 +25,14 @@ const fetchUserData = async () => {
   return [];
 };
 
-const fetchLessonsData = async (division: string, category: string) => {
-  const res = await axios.get(`/api/lessons/${division}/${category}`);
+const fetchLessonsData = async (category: string) => {
+  const res = await axios.get(`/api/lessons/${category}`);
   console.log("using trad fetch method");
   const { totalLessons } = res.data;
 
   const lessonsData = await Promise.all(
     Array.from({ length: totalLessons }, (_, i) => i + 1).map(async (num) => {
-      const lessonRes = await axios.get(`/api/lessons/${division}/${category}/${num}`);
+      const lessonRes = await axios.get(`/api/lessons/${category}/${num}`);
       return lessonRes.data;
     })
   );
@@ -41,12 +41,11 @@ const fetchLessonsData = async (division: string, category: string) => {
 };
 
 const StudyCategoryPage: React.FC = () => {
-  const { division, category } = useParams();
+  const { category } = useParams();
   const queryClient = useQueryClient();
-  const divisionParam = Array.isArray(division) ? division[0] : division;
   const categoryParam = Array.isArray(category) ? category[0] : category;
 
-  const lessonsCache = queryClient.getQueryData(['lessonsData', divisionParam, categoryParam]);
+  const lessonsCache = queryClient.getQueryData(['lessonsData', categoryParam]);
   console.log("lessonsCache: ", lessonsCache);
   const userLessonsCache = queryClient.getQueryData(['userLessons']);
 
@@ -59,11 +58,11 @@ const StudyCategoryPage: React.FC = () => {
   });
 
   const { data: lessons=[], isLoading: lessonsLoading } = useQuery({
-    queryKey: ['lessonsData', divisionParam, categoryParam],
-    queryFn: () => fetchLessonsData(divisionParam as string, categoryParam as string),
+    queryKey: ['lessonsData', categoryParam],
+    queryFn: () => fetchLessonsData(categoryParam as string),
     staleTime: 5 * 60 * 1000,
     refetchInterval: 10 * 60 * 1000,
-    enabled: !!divisionParam && !!categoryParam,
+    enabled: !!categoryParam,
     initialData: lessonsCache !== undefined ? lessonsCache as string[] : undefined,
   });
   
@@ -76,7 +75,7 @@ const StudyCategoryPage: React.FC = () => {
   if (userLoading || lessonsLoading || !lessons) return <div>Loading...</div>;
 
   const getLessonStatus = (lessonNumber: number) => {
-    const lessonPath = `${division}/${category}/${lessonNumber}`;
+    const lessonPath = `${category}/${lessonNumber}`;
     if (userLessons?.includes(`${lessonPath}-complete`)) return 'complete';
     if (userLessons?.includes(`${lessonPath}-progress`)) return 'progress';
     return 'unstarted';
@@ -84,7 +83,7 @@ const StudyCategoryPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-stone-100">
-      <LessonHeader division={divisionParam} category={categoryParam} />
+      <LessonHeader category={categoryParam} />
       <br />
       <br />
       <div className="p-8">
@@ -97,7 +96,6 @@ const StudyCategoryPage: React.FC = () => {
               <div key={index} className={`mb-8 flex justify-center items-center w-full`}>
                 <div className={`w-1/2 flex flex-col items-${isLeft ? 'end' : 'start'} pr-${isLeft ? 8 : 0} pl-${isLeft ? 0 : 8}`}>
                   <LessonLink
-                    division={divisionParam}
                     category={categoryParam}
                     lessonNumber={index + 1}
                     title={lesson.title}

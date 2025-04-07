@@ -13,8 +13,8 @@ import LessonProgressDropdown from '@/components/LessonProgressDropdown';
 
 const DynamicLessonsNavBar = dynamic(() => import('@/components/LessonsNavBar'), { ssr: false });
 
-const fetchLesson = async (division: string, category: string, lesson: string) => {
-  const res = await axios.get(`/lessons/${division}/${category}/${lesson}.md`);
+const fetchLesson = async (category: string, lesson: string) => {
+  const res = await axios.get(`/lessons/${category}/${lesson}.md`);
   const parsed = matter(res.data);
   return {
     title: parsed.data.title,
@@ -25,16 +25,15 @@ const fetchLesson = async (division: string, category: string, lesson: string) =
   };
 };
 
-const fetchLessonStatus = async (userId: string, division: string, category: string, lesson: string) => {
+const fetchLessonStatus = async (userId: string, category: string, lesson: string) => {
   const res = await axios.get(`/api/user/${userId}/progress`, {
-    params: { division, category, lesson }
+    params: { category, lesson }
   });
   return res.data.status || 'unstarted';
 };
 
 const StudyLessonPage: React.FC = () => {
-  const { division, category, lesson } = useParams();
-  const divisionParam = Array.isArray(division) ? division[0] : division;
+  const { category, lesson } = useParams();
   const categoryParam = Array.isArray(category) ? category[0] : category;
   const lessonParam = Array.isArray(lesson) ? lesson[0] : lesson;
   const currentLessonNumber = parseInt(lessonParam as string, 10);
@@ -63,15 +62,15 @@ const StudyLessonPage: React.FC = () => {
   }, []);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['lessonData', divisionParam, categoryParam, lessonParam],
-    queryFn: () => fetchLesson(divisionParam as string, categoryParam as string, lessonParam as string),
-    enabled: !!divisionParam && !!categoryParam && !!lessonParam,  // Enable query when params are available
+    queryKey: ['lessonData', categoryParam, lessonParam],
+    queryFn: () => fetchLesson(categoryParam as string, lessonParam as string),
+    enabled: !!categoryParam && !!lessonParam,  // Enable query when params are available
   });
 
   const { data: lessonStatus, isLoading: statusLoading } = useQuery({
-    queryKey: ['lessonStatus', userId, divisionParam, categoryParam, lessonParam],
-    queryFn: () => fetchLessonStatus(userId, divisionParam as string, categoryParam as string, lessonParam as string),
-    enabled: !!userId && !!divisionParam && !!categoryParam && !!lessonParam,  // Enable query when params are available
+    queryKey: ['lessonStatus', userId, categoryParam, lessonParam],
+    queryFn: () => fetchLessonStatus(userId, categoryParam as string, lessonParam as string),
+    enabled: !!userId && !!categoryParam && !!lessonParam,  // Enable query when params are available
   });
 
   if (isLoading || statusLoading) return <div>Loading...</div>;
@@ -98,8 +97,8 @@ const StudyLessonPage: React.FC = () => {
       <DynamicLessonsNavBar />
       <div className="flex-1 p-4 ml-72">
         <div className="flex justify-between mb-4">
-          <PrevButton currentLessonNumber={currentLessonNumber} division={divisionParam} category={categoryParam} />
-          <NextButton currentLessonNumber={currentLessonNumber} division={divisionParam} category={categoryParam} totalLessons={totalLessons} />
+          <PrevButton currentLessonNumber={currentLessonNumber} category={categoryParam} />
+          <NextButton currentLessonNumber={currentLessonNumber} category={categoryParam} totalLessons={totalLessons} />
         </div>
         {frequency && <p className={`text-md mt-12 mb-2 ${getFrequencyClass(frequency)}`}>Frequency: {frequency}</p>}
         <h1 className="text-4xl font-bold mb-4">{title}</h1>
@@ -107,12 +106,11 @@ const StudyLessonPage: React.FC = () => {
         <p className="italic text-md mb-4">{description}</p>
         <LessonProgressDropdown
           userId={userId}
-          division={divisionParam}
           category={categoryParam}
           lesson={lessonParam}
           initialStatus={lessonStatus} // Assuming the status is fetched from the API
         />
-        <div className="border border-gray-300 rounded-md p-4 mb-8 w-5/12">
+        <div className="mt-10 border border-gray-300 rounded-md p-4 mb-8 w-5/12">
           <TableOfContents content={content} />
         </div>
         <div className="prose mt-4 w-9/12">

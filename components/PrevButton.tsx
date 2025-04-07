@@ -3,16 +3,15 @@ import React from 'react';
 
 interface PrevButtonProps {
   currentLessonNumber: number;
-  division: string;
   category: string;
 }
 
-const PrevButton: React.FC<PrevButtonProps> = ({ currentLessonNumber, division, category }) => {
+const PrevButton: React.FC<PrevButtonProps> = ({ currentLessonNumber, category }) => {
   const router = useRouter();
 
   const handlePrev = () => {
     if (currentLessonNumber > 1) {
-      router.push(`/study/${division}/${category}/${currentLessonNumber - 1}`);
+      router.push(`/study/${category}/${currentLessonNumber - 1}`);
     }
   };
 

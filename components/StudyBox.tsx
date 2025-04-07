@@ -5,19 +5,18 @@ import Link from 'next/link';
 import axios from 'axios';
 
 interface StudyBoxProps {
-  division: string;
   specialty: string;
   lessons: string[];
   title?: string;
 }
 
-const StudyBox: React.FC<StudyBoxProps> = ({ division, specialty, lessons, title }) => {
+const StudyBox: React.FC<StudyBoxProps> = ({ specialty, lessons, title }) => {
   const [totalLessons, setTotalLessons] = useState<number>(0);
 
   useEffect(() => {
     const fetchTotalLessons = async () => {
       try {
-        const res = await axios.get(`/api/lessons/${division}/${specialty}`);
+        const res = await axios.get(`/api/lessons/${specialty}`);
         setTotalLessons(res.data.totalLessons);
       } catch (error) {
         console.error('Error fetching total lessons:', error);
@@ -25,15 +24,15 @@ const StudyBox: React.FC<StudyBoxProps> = ({ division, specialty, lessons, title
     };
 
     fetchTotalLessons();
-  }, [division, specialty]);
+  }, [specialty]);
 
-  const completedLessons = lessons.filter(lesson => lesson.includes(`${division}/${specialty}/`) && lesson.endsWith('-complete')).length;
-  const inProgressLessons = lessons.filter(lesson => lesson.includes(`${division}/${specialty}/`) && lesson.endsWith('-progress')).length;
+  const completedLessons = lessons.filter(lesson => lesson.includes(`${specialty}/`) && lesson.endsWith('-complete')).length;
+  const inProgressLessons = lessons.filter(lesson => lesson.includes(`${specialty}/`) && lesson.endsWith('-progress')).length;
   const unstartedLessons = totalLessons - completedLessons - inProgressLessons;
   const displayTitle = title || `${specialty.charAt(0).toUpperCase() + specialty.slice(1)}`;
 
   return (
-    <Link href={`/study/${division}/${specialty}`} className="block border rounded p-6 bg-beige-200 shadow-md hover:bg-beige-300 text-lg font-semibold text-center transition-colors duration-300">
+    <Link href={`/study/${specialty}`} className="block border rounded p-6 bg-beige-200 shadow-md hover:bg-beige-300 text-lg font-semibold text-center transition-colors duration-300">
       <div className="text-xl mb-4">{displayTitle}</div>
       <div className="flex justify-center mb-4">
         <div className="flex flex-col items-center mx-2">

@@ -6,20 +6,18 @@ import { useMutation } from '@tanstack/react-query';
 
 interface LessonProgressDropdownProps {
   userId: string; // Now accepts userId as a prop
-  division: string;
   category: string;
   lesson: string;
   initialStatus: 'unstarted' | 'progress' | 'complete';
 }
 
-const LessonProgressDropdown: React.FC<LessonProgressDropdownProps> = ({ userId, division, category, lesson, initialStatus }) => {
+const LessonProgressDropdown: React.FC<LessonProgressDropdownProps> = ({ userId, category, lesson, initialStatus }) => {
   const [status, setStatus] = useState<'unstarted' | 'progress' | 'complete'>(initialStatus);
 
   const { mutate } = useMutation({
     mutationFn: async (newStatus: 'unstarted' | 'progress' | 'complete') => {
       await axios.put(`/api/user/${userId}/progress`, {
         status: newStatus,
-        division,
         category,
         lesson,
       });

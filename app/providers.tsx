@@ -2,6 +2,7 @@
 "use client";
 import React, { ReactNode, useEffect } from 'react';
 import { SessionProvider } from 'next-auth/react';
+/*import { SessionProvider } from 'next-auth';*/
 import { UserProvider } from '@/context/UserContext';
 import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { persistQueryClient } from '@tanstack/react-query-persist-client'

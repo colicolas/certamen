@@ -3,17 +3,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-export async function GET(req: NextRequest, { params }: { params: { division: string, category: string } }) {
-  let { division, category } = params;
+export async function GET(req: NextRequest, { params }: { params: { category: string } }) {
+  let { category } = params;
 
-  if (!division || !category) {
+  if (!category) {
     return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
   }
 
-  division = division.toUpperCase();
   category = category.toLowerCase();
 
-  const lessonsDir = path.join(process.cwd(), `public/lessons/${division}/${category}`);
+  const lessonsDir = path.join(process.cwd(), `public/lessons/${category}`);
   if (!fs.existsSync(lessonsDir)) {
     return NextResponse.json({ error: 'Category not found' }, { status: 404 });
   }
