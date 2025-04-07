@@ -41,8 +41,10 @@ const fetchLessonsData = async (category: string) => {
 };
 
 const StudyCategoryPage: React.FC = () => {
-  const { category } = useParams();
   const queryClient = useQueryClient();
+
+  const params = useParams<{ category: string }>();
+  const category = params?.category ?? '';
   const categoryParam = Array.isArray(category) ? category[0] : category;
 
   const lessonsCache = queryClient.getQueryData(['lessonsData', categoryParam]);

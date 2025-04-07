@@ -33,12 +33,16 @@ const fetchLessonStatus = async (userId: string, category: string, lesson: strin
 };
 
 const StudyLessonPage: React.FC = () => {
-  const { category, lesson } = useParams();
-  const categoryParam = Array.isArray(category) ? category[0] : category;
-  const lessonParam = Array.isArray(lesson) ? lesson[0] : lesson;
-  const currentLessonNumber = parseInt(lessonParam as string, 10);
   const totalLessons = 5;
-  const [userId, setUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string>('');
+
+  const params = useParams<{ category: string; lesson: string }>();
+  const categoryRaw = params?.category ?? '';
+  const lessonRaw = params?.lesson ?? '';
+
+  const categoryParam = Array.isArray(categoryRaw) ? categoryRaw[0] : categoryRaw;
+  const lessonParam = Array.isArray(lessonRaw) ? lessonRaw[0] : lessonRaw;
+  const currentLessonNumber = parseInt(lessonParam, 10);
 
   useEffect(() => {
     const fetchUserId = async () => {

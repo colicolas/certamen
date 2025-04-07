@@ -9,7 +9,9 @@ interface TableOfContentsProps {
 }
 
 const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => {
-  const { category, lesson } = useParams();
+  const params = useParams<{ category: string; lesson: string }>();
+  const category = params?.category ?? '';
+  const lesson = params?.lesson ?? '';
 
   const getHeaders = (markdown: string) => {
     const headers = markdown.match(/^(### |## |# )(.*)/gm);

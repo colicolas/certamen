@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-export default function GameSettings({
-  isOwner = false,
-}: {
-  isOwner: boolean;
-}) {
+export default function GameSettings({ isOwner = false }: { isOwner: boolean }) {
   const [category, setCategory] = useState('Nationals');
   const [yearOptions, setYearOptions] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
@@ -30,7 +26,6 @@ export default function GameSettings({
       <h2 className="text-xl font-semibold mb-4">Game Settings</h2>
 
       <div className="flex flex-wrap items-center gap-4 mb-4">
-        {/* Category Dropdown */}
         <select
           className="p-2 w-40 rounded-md border transition duration-300"
           value={category}
@@ -40,7 +35,6 @@ export default function GameSettings({
           <option value="California" disabled>California (coming soon)</option>
         </select>
 
-        {/* Year Dropdown */}
         <select
           className="p-2 w-28 rounded-md border transition duration-300"
           value={selectedYear || ''}
@@ -53,9 +47,8 @@ export default function GameSettings({
           ))}
         </select>
 
-        {/* Time Input */}
         <div className="flex items-center gap-1">
-          <label className="text-sm text-gray-600">Time for Tossup:</label>
+          <label className="text-sm text-gray-600">Time:</label>
           <input
             type="number"
             min={5}

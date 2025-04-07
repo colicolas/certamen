@@ -63,7 +63,7 @@ const StudyPage: React.FC = () => {
         {division && specialties.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-10 ml-20">
             {specialties.map((specialty) => (
-              <StudyBox key={specialty} division={division} specialty={specialty} lessons={lessons}/>
+              <StudyBox key={specialty} specialty={specialty} lessons={lessons}/>
             ))}
           </div>
         )}

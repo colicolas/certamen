@@ -48,7 +48,10 @@ const fetchLessons = async (category: string) => {
 
 const LessonsNavBar: React.FC = () => {
   const { userData, loading } = useUser();
-  const { category } = useParams();
+
+  const params = useParams<{ category: string }>();
+  const category = params?.category ?? '';
+
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
 
@@ -126,7 +129,7 @@ const LessonsNavBar: React.FC = () => {
                 >
                   <Link
                     href={`/study/${category}/${lesson.number}`}
-                    className={`block p-2 ${pathname.endsWith(`/${lesson.number}`) ? 'font-bold' : ''} transition duration-300 hover:opacity-75`}
+                    className={`block p-2 ${pathname?.endsWith(`/${lesson.number}`) ? 'font-bold' : ''} transition duration-300 hover:opacity-75`}
                   >
                     {lesson.name}
                   </Link>

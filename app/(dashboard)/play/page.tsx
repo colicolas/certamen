@@ -1,11 +1,29 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 
 export default function PlayPage() {
   const [mode, setMode] = useState('FFA');
   const [code, setCode] = useState(['', '', '', '']);
-  const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
+  const [user, setUser] = useState<any>(null);
+  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const session = await axios.get('/api/auth/session');
+        if (session && session.data.user) {
+          const res = await axios.get(`/api/user/${session.data.user.id}`);
+          setUser(res.data);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleChange = (index: number, value: string) => {
     if (!/^[A-Za-z0-9]$/.test(value)) return;
@@ -16,21 +34,6 @@ export default function PlayPage() {
 
     if (index < 3) {
       inputsRef.current[index + 1]?.focus();
-    }
-  };
-
-
-  const createGame = () => {
-    const code = [...Array(4)].map(() =>
-      String.fromCharCode(65 + Math.floor(Math.random() * 26))
-    ).join('');
-    window.location.href = `/play/${code}`;
-  };
-
-  const joinGame = () => {
-    const joinedCode = code.join('');
-    if (joinedCode.length === 4) {
-      window.location.href = `/play/${joinedCode}`;
     }
   };
 
@@ -48,6 +51,41 @@ export default function PlayPage() {
       }
 
       e.preventDefault();
+    }
+  };
+
+  const redirectWithSessionInfo = (roomCode: string, isOwner: boolean) => {
+    if (!user) return;
+
+    const userData = {
+      username: user.username,
+      division: user.division,
+      specialties: user.specialties,
+      pfp: '🧠', // change to actual pfp later if you want
+    };
+
+    sessionStorage.setItem('certamen-user', JSON.stringify(userData));
+    sessionStorage.setItem('certamen-is-owner', isOwner ? 'true' : 'false');
+
+    console.log(`[redirecting to /play/${roomCode}]`, {
+      userData,
+      isOwner,
+    });
+
+    window.location.href = `/play/${roomCode}`;
+  };
+
+  const createGame = () => {
+    const generatedCode = [...Array(4)].map(() =>
+      String.fromCharCode(65 + Math.floor(Math.random() * 26))
+    ).join('');
+    redirectWithSessionInfo(generatedCode, true);
+  };
+
+  const joinGame = () => {
+    const joinedCode = code.join('');
+    if (joinedCode.length === 4) {
+      redirectWithSessionInfo(joinedCode, false);
     }
   };
 
@@ -70,7 +108,7 @@ export default function PlayPage() {
         {code.map((char, index) => (
           <input
             key={index}
-            ref={(el) => (inputsRef.current[index] = el)}
+            ref={(el) => {inputsRef.current[index] = el}}
             maxLength={1}
             value={char}
             onChange={(e) => handleChange(index, e.target.value)}
@@ -80,7 +118,10 @@ export default function PlayPage() {
         ))}
       </div>
 
-      <button onClick={joinGame} className="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-300">
+      <button
+        onClick={joinGame}
+        className="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-300"
+      >
         Join Game
       </button>
 
